@@ -25,8 +25,9 @@ public class AsyncAuth {
             MinecraftForge.EVENT_BUS.addListener(LoginCommandHandler::onPlayerChat);
         } else if (FMLEnvironment.dist == Dist.DEDICATED_SERVER) {
             ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER , MyModConfig.SPEC);
-
+            MinecraftForge.EVENT_BUS.addListener(PlayerEventHandler::onPlayerMove);
             MinecraftForge.EVENT_BUS.addListener(PlayerEventHandler::onPlayerLogin);
+            MinecraftForge.EVENT_BUS.addListener(PlayerEventHandler::onPlayerLogout);
             MinecraftForge.EVENT_BUS.addListener(AsyncAuth::setup);
         }
         CommonPacketManager.init();

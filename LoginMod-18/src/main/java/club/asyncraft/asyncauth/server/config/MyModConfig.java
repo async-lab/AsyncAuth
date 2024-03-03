@@ -21,6 +21,7 @@ public class MyModConfig {
     public static final ForgeConfigSpec.ConfigValue<String> unRegisteredMsg;
     public static final ForgeConfigSpec.ConfigValue<String> loginCommandUsage;
     public static final ForgeConfigSpec.ConfigValue<String> passwordIncorrect;
+    public static final ForgeConfigSpec.ConfigValue<String> loginSuccess;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -42,7 +43,8 @@ public class MyModConfig {
         prefix = builder.define("prefix","&b&lAsyncraft &r&e» ");
         unRegisteredMsg = builder.define("un_registered","&c您还未注册，请先注册");
         loginCommandUsage = builder.define("login_command_usage","&c用法: {cmd} <你的密码>");
-        passwordIncorrect = builder.define("password.incorrect","&c密码错误");
+        passwordIncorrect = builder.define("password_incorrect","&c密码错误");
+        loginSuccess = builder.define("login_success","&a登录成功");
         builder.pop();
 
         SPEC = builder.build();

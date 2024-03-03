@@ -1,6 +1,7 @@
 package club.asyncraft.asyncauth.common.network;
 
 import club.asyncraft.asyncauth.common.util.ByteBufUtils;
+import club.asyncraft.asyncauth.server.PlayerManager;
 import club.asyncraft.asyncauth.server.config.MyModConfig;
 import club.asyncraft.asyncauth.common.util.MessageUtils;
 import club.asyncraft.asyncauth.server.util.SqlUtils;
@@ -36,18 +37,23 @@ public class LoginRequestPacketMessage {
 
         ctx.get().enqueueWork(() -> {
             ServerPlayer player = ctx.get().getSender();
-            if (!SqlUtils.isRegistered(player)){
-                MessageUtils.sendMessage(player,MessageUtils.convertMessage(MyModConfig.unRegisteredMsg.get()));
-                return;
-            }
-            if (SqlUtils.checkPassword(player.getName().getString(), message.getPassword())) {
-                //TODO 处理登录请求(执行登录命令)
-                MinecraftServer server = ctx.get().getSender().getServer();
-                CommandSourceStack source = server.createCommandSourceStack();
-                server.getCommands().performCommand(source,"/authme forcelogin " + player.getName().getString());
-            } else {
-                MessageUtils.sendMessage(player,MessageUtils.convertMessage(MyModConfig.passwordIncorrect.get()));
-            }
+            player.getServer().executeIfPossible(() -> {
+
+                if (!SqlUtils.isRegistered(player)){
+                    MessageUtils.sendMessage(player,MessageUtils.convertMessage(MyModConfig.unRegisteredMsg.get()));
+                    return;
+                }
+                if (SqlUtils.checkPassword(player, message.getPassword())) {
+                    //TODO 处理登录请求(执行登录命令)
+                    /*MinecraftServer server = ctx.get().getSender().getServer();
+                    CommandSourceStack source = server.createCommandSourceStack();
+                    server.getCommands().performCommand(source,"/authme forcelogin " + player.getName().getString());*/
+                    PlayerManager.loginPlayer(player);
+                    MessageUtils.sendMessage(player,MessageUtils.convertMessage(MyModConfig.loginSuccess.get()));
+                } else {
+                    MessageUtils.sendMessage(player,MessageUtils.convertMessage(MyModConfig.passwordIncorrect.get()));
+                }
+            });
         });
         ctx.get().setPacketHandled(true);
     }
