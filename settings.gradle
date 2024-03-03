@@ -1,0 +1,25 @@
+pluginManagement {
+    repositories {
+        maven {
+            name = 'Ali Mirror Maven'
+            url = "https://maven.aliyun.com/nexus/content/groups/public"
+            allowInsecureProtocol = true
+        }
+        maven {
+            name = 'MinecraftForge'
+            url = 'https://maven.minecraftforge.net/'
+        }
+        gradlePluginPortal()
+
+    }
+
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.7.0'
+}
+
+rootProject.name = "AsyncAuth"
+include "LoginMod-18"
+include "LoginMod-16"
+
