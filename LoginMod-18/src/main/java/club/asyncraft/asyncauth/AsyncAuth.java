@@ -33,6 +33,7 @@ public class AsyncAuth {
             MinecraftForge.EVENT_BUS.addListener(PlayerEventHandler::onPlayerLogin);
             MinecraftForge.EVENT_BUS.addListener(PlayerEventHandler::onPlayerLogout);
             MinecraftForge.EVENT_BUS.addListener(PlayerEventHandler::onPlayerChat);*/
+            MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
             MinecraftForge.EVENT_BUS.addListener(AsyncAuth::setup);
         }
         CommonPacketManager.init();
