@@ -15,11 +15,15 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkDirection;
 
-@Mod.EventBusSubscriber(modid = "${mod_id}",bus = Mod.EventBusSubscriber.Bus.FORGE,value = Dist.DEDICATED_SERVER)
+@Mod.EventBusSubscriber(modid = "async_auth", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.DEDICATED_SERVER)
 public class PlayerEventHandler {
 
 /*
@@ -44,32 +48,87 @@ public class PlayerEventHandler {
         PlayerManager.logoutPlayer((ServerPlayer) event.getPlayer());
     }
 
-    @SubscribeEvent
-    public static void onPlayerMove(TickEvent.PlayerTickEvent event){
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerMove(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         if (!PlayerManager.hasLogin(player)) {
-            player.teleportTo(player.xOld,player.yOld,player.zOld);
+            player.teleportTo(player.xOld, player.yOld, player.zOld);
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerChat(ServerChatEvent event) {
+        System.out.println("nihao: " + event.getMessage());
         ServerPlayer player = event.getPlayer();
-        if (!PlayerManager.hasLogin(player)) {
-            event.setCanceled(true);
-            MessageUtils.sendConfigMessageOnServer(player,"login.un_login_info");
-        }
+        verify(player, event, true);
     }
 
-    @SubscribeEvent
-    public static void onPlayerBreak(EntityItemPickupEvent event) {
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerPickup(EntityItemPickupEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = ((Player) event.getEntity());
-            if (!PlayerManager.hasLogin(player)) {
-                event.setCanceled(true);
+            verify(player, event, false);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerCommand(CommandEvent event) {
+        Entity entity = event.getParseResults().getContext().getSource().getEntity();
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            verify(player,event,true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerPlace(BlockEvent.EntityPlaceEvent event) {
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            verify(player, event, true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerBreak(BlockEvent.BreakEvent event) {
+        verify(event.getPlayer(), event, true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerInteractEntity(PlayerInteractEvent.EntityInteract event) {
+        verify(event.getPlayer(), event, true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerRightClick(PlayerInteractEvent.RightClickBlock event) {
+        verify(event.getPlayer(), event, true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerRightClick(PlayerInteractEvent.RightClickEmpty event) {
+        verify(event.getPlayer(), event, true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerRightClick(PlayerInteractEvent.RightClickItem event) {
+        verify(event.getPlayer(), event, false);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+        verify(event.getPlayer(), event, false);
+    }
+
+    private static void verify(Player player, Event event, boolean sendMsg) {
+        if (!PlayerManager.hasLogin(player)) {
+            event.setCanceled(true);
+            if (sendMsg) {
+                sendUnLoginMessage(player);
             }
         }
     }
-    //TODO 放置方块 破坏方块 交互物品  输入命令
+
+    private static void sendUnLoginMessage(Player player) {
+        MessageUtils.sendConfigMessageOnServer(player, "login.un_login_info");
+    }
 
 }
