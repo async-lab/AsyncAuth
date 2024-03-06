@@ -5,6 +5,7 @@ import club.asyncraft.asyncauth.server.config.MyModConfig;
 import club.asyncraft.asyncauth.client.ClientModContext;
 import club.asyncraft.asyncauth.common.network.LoginRequestPacketMessage;
 import club.asyncraft.asyncauth.common.util.MessageUtils;
+import club.asyncraft.asyncauth.server.util.i18n.TranslationContext;
 import net.minecraftforge.client.event.ClientChatEvent;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,11 +27,11 @@ public class LoginCommandHandler {
         if (isLoginPrefix(args[0])) {
             event.setCanceled(true);
             if (ClientModContext.hasLogin) {
-                MessageUtils.sendMessageOnClient(MessageUtils.convertMessage(MyModConfig.alreadyLogin.get()));
+                MessageUtils.sendMessageOnClient(ClientModContext.message.getAlreadyLoginMsg());
                 return;
             }
             if (args.length != 2) {
-                MessageUtils.sendMessageOnClient(MessageUtils.convertMessage(MyModConfig.loginCommandUsage.get().replace("{cmd}",args[0])));
+                MessageUtils.sendMessageOnClient(ClientModContext.message.getLoginCommandUsage().replace("{cmd}",args[0]));
                 return;
             }
             CommonPacketManager.loginRequestChannel.sendToServer(new LoginRequestPacketMessage(args[1]));

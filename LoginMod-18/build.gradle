@@ -104,7 +104,7 @@ dependencies {
 
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.4.1'
     implementation "com.mysql:mysql-connector-j:8.0.33"
-    implementation 'org.tomlj:tomlj:1.1.1'
+//    implementation 'org.tomlj:tomlj:1.1.1'
 
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
@@ -162,7 +162,7 @@ shadowJar {
     mergeServiceFiles()
     dependencies {
         include(dependency("com.zaxxer:HikariCP"))
-        include(dependency("org.tomlj:tomlj"))
+//        include(dependency("org.tomlj:tomlj"))
 //        include(dependency("com.mysql:mysql-connector-j"))
     }
 
