@@ -1,11 +1,12 @@
 package club.asyncraft.asyncauth.client;
 
+import club.asyncraft.asyncauth.common.network.ClientMessageDTO;
+
 public class ClientModContext {
 
-    //client side
     public static Boolean enable = false;
+    public static ClientMessageDTO message;
 
-    //client side
     public static Boolean hasLogin = false;
 
 }

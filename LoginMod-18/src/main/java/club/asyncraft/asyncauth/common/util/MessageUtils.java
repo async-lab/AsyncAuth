@@ -1,6 +1,6 @@
 package club.asyncraft.asyncauth.common.util;
 
-import club.asyncraft.asyncauth.server.config.MyModConfig;
+import club.asyncraft.asyncauth.server.util.i18n.TranslationContext;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
@@ -8,16 +8,16 @@ import net.minecraft.world.entity.player.Player;
 
 public class MessageUtils {
 
-    public static void sendMessage(Player player,String msg) {
+    public static void sendMessageOnServer(Player player, String msg) {
         player.sendMessage(new TextComponent(msg.replace("&","§")), Util.NIL_UUID);
+    }
+
+    public static void sendConfigMessageOnServer(Player player,String path) {
+        player.sendMessage(new TextComponent(TranslationContext.translate(path)),Util.NIL_UUID);
     }
 
     public static void sendMessageOnClient(String msg) {
         Minecraft.getInstance().player.sendMessage(new TextComponent(msg.replace("&","§")),Util.NIL_UUID);
-    }
-
-    public static String convertMessage(String msg) {
-        return MyModConfig.prefix.get().replace("&","§") + "§r" + msg.replace("&","§");
     }
 
 }
