@@ -2,6 +2,8 @@ package club.asyncraft.asyncauth;
 
 import club.asyncraft.asyncauth.client.event.LoginCommandHandler;
 import club.asyncraft.asyncauth.common.network.CommonPacketManager;
+import club.asyncraft.asyncauth.server.PlayerManager;
+import club.asyncraft.asyncauth.server.ServerModContext;
 import club.asyncraft.asyncauth.server.config.MyModConfig;
 import club.asyncraft.asyncauth.server.util.SqlUtils;
 import club.asyncraft.asyncauth.client.event.ClientPlayerEventHandler;
@@ -15,6 +17,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,24 +32,24 @@ public class AsyncAuth {
             MinecraftForge.EVENT_BUS.addListener(LoginCommandHandler::onPlayerChat);
         } else if (FMLEnvironment.dist == Dist.DEDICATED_SERVER) {
             ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER , MyModConfig.SPEC,"AsyncAuth/config.toml");
-/*            MinecraftForge.EVENT_BUS.addListener(PlayerEventHandler::onPlayerMove);
-            MinecraftForge.EVENT_BUS.addListener(PlayerEventHandler::onPlayerLogin);
-            MinecraftForge.EVENT_BUS.addListener(PlayerEventHandler::onPlayerLogout);
-            MinecraftForge.EVENT_BUS.addListener(PlayerEventHandler::onPlayerChat);*/
-            MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
+//            MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
             MinecraftForge.EVENT_BUS.addListener(AsyncAuth::setup);
+            MinecraftForge.EVENT_BUS.addListener(PlayerManager::sendLoginInfo);
         }
         CommonPacketManager.init();
+
         log.info("初始化完成");
     }
 
     public static void setup(ServerStartingEvent event) {
-        log.info("加载数据库...");
+        ServerModContext.serverInstance = ServerLifecycleHooks.getCurrentServer();
+        log.info("加载语言配置文件...");
         try {
             TranslationContext.init();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        log.info("加载数据库...");
         SqlUtils.initDataSource();
     }
 
