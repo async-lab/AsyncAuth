@@ -21,7 +21,7 @@ public class PlayerManager {
     private static int count = 0;
 
     public static void sendLoginInfo(TickEvent.ServerTickEvent event) {
-        if (unLoginPlayers.isEmpty()) {
+        if (unLoginPlayers.isEmpty() && unRegisterPlayers.isEmpty()) {
             count = 0;
             return;
         }
@@ -79,7 +79,8 @@ public class PlayerManager {
     }
 
     public static boolean hasLogin(Player player) {
-        return !unLoginPlayers.contains(player.getStringUUID());
+        String uuid = player.getStringUUID();
+        return !(unLoginPlayers.contains(uuid) || unRegisterPlayers.contains(uuid));
     }
 
 }
