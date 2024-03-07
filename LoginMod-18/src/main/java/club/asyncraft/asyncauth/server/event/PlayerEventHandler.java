@@ -9,15 +9,14 @@ import club.asyncraft.asyncauth.server.util.i18n.TranslationContext;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -86,7 +85,7 @@ public class PlayerEventHandler {
     public static void onPlayerPlace(BlockEvent.EntityPlaceEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            verify(player, event, true);
+            verify(player, event, false);
         }
     }
 
@@ -97,17 +96,17 @@ public class PlayerEventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerInteractEntity(PlayerInteractEvent.EntityInteract event) {
-        verify(event.getPlayer(), event, true);
+        verify(event.getPlayer(), event, false);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerRightClick(PlayerInteractEvent.RightClickBlock event) {
-        verify(event.getPlayer(), event, true);
+        verify(event.getPlayer(), event, false);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerRightClick(PlayerInteractEvent.RightClickEmpty event) {
-        verify(event.getPlayer(), event, true);
+        verify(event.getPlayer(), event, false);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -125,6 +124,16 @@ public class PlayerEventHandler {
         Entity entity = event.getEntity();
         if (entity instanceof Player) {
             verify(((Player) entity),event,false);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPlayerDrop(ItemTossEvent event) {
+        ServerPlayer player = ((ServerPlayer) event.getPlayer());
+        if (!PlayerManager.hasLogin(player)) {
+            ItemStack item = event.getEntityItem().getItem();
+            player.getInventory().add(item);
+            event.setCanceled(true);
         }
     }
 
