@@ -15,6 +15,8 @@ public class MyModConfig {
     public static final ForgeConfigSpec.ConfigValue<Boolean> useSSL;
     public static final ForgeConfigSpec.ConfigValue<String> address;
 
+    public static final ForgeConfigSpec.ConfigValue<Integer> ticks;
+
     public static final ForgeConfigSpec.ConfigValue<String> language;
 
     static {
@@ -31,6 +33,8 @@ public class MyModConfig {
         useSSL = builder.define("useSSL",true);
         address = builder.define("address","127.0.0.1");
         builder.pop();
+
+        ticks = builder.comment("发送登录信息间隔时间(单位: tick)").defineInRange("ticks",20,1,200);
 
         language = builder.comment("same with files in locals directory").define("lang","zh-CN");
 

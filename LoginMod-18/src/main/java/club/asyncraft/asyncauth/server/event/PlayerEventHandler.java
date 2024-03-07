@@ -13,6 +13,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -40,6 +42,7 @@ public class PlayerEventHandler {
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getPlayer();
+        PlayerManager.subscribeUnLoginPlayer(player);
         CommonPacketManager.clientInitializeChannel.sendTo(new ClientInitializeMessage(SqlUtils.isRegistered(player), TranslationContext.clientMessage), ((ServerPlayer) player).connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
     }
 
@@ -58,7 +61,6 @@ public class PlayerEventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerChat(ServerChatEvent event) {
-        System.out.println("nihao: " + event.getMessage());
         ServerPlayer player = event.getPlayer();
         verify(player, event, true);
     }
@@ -116,6 +118,14 @@ public class PlayerEventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
         verify(event.getPlayer(), event, false);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onDamaged(LivingDamageEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof Player) {
+            verify(((Player) entity),event,false);
+        }
     }
 
     private static void verify(Player player, Event event, boolean sendMsg) {
