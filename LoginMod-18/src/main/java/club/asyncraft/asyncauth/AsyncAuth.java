@@ -51,6 +51,10 @@ public class AsyncAuth {
         }
         log.info("加载数据库...");
         SqlUtils.initDataSource();
+        if (ServerModContext.dataSource == null) {
+            log.error("请检查数据库配置");
+            throw new RuntimeException();
+        }
     }
 
 

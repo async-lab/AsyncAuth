@@ -37,16 +37,17 @@ public class SqlUtils {
             log.info("数据库已连接");
         } catch (Exception e) {
             log.info("连接数据库失败");
+            ServerModContext.dataSource = null;
             e.printStackTrace();
         }
 
         executeStatement(statement -> {
-            String sql = "create table if not exists '" + tableName + "' (" +
-                    "'id' bigint(20) not null auto_increment PRIMARY KEY ," +
-                    "'username' varchar(50) not null ," +
-                    "'realname' varchar(50) not null ," +
-                    "'password' varchar(255) not null ," +
-                    "index('username')" +
+            String sql = "create table if not exists " + tableName + " (" +
+                    "id bigint(20) not null auto_increment PRIMARY KEY ," +
+                    "username varchar(50) not null ," +
+                    "realname varchar(50) not null ," +
+                    "password varchar(255) not null ," +
+                    "index(username)" +
                     ");";
             statement.executeUpdate(sql);
             return null;

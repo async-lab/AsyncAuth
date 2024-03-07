@@ -15,6 +15,10 @@ public class ClientMessageDTO implements Serializable {
     private String registerCommandUsage;
 
     private String passwordTooShort;
+    private Integer minLength;
+
+    private String passwordUnconformity;
+
 
     @Serial
     private static final long serialVersionUID = 1L;

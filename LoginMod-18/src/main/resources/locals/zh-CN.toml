@@ -9,12 +9,16 @@ un_registered = "&c您还未注册，请先注册"
 too_short = "&c密码过短, 最少{min}位数"
 
 login_info = "&a请输入 &e/l [密码] &a进行登录"
-register_info = "&a您还未注册，请输入 &e/reg [密码] [确认密码] &a进行注册"
 
 un_login_info = "&c您还未登录，无法执行此操作"
 
+[register]
+already_register = "&c您已经注册过了"
+register_info = "&a您还未注册，请输入 &e/reg [密码] [确认密码] &a进行注册"
+success = "&a注册成功"
 [command]
 # 占位符 {cmd} 命令名称
 login_usage = "&c用法: {cmd} <你的密码>"
 register_usage = "&c用法: {cmd} <密码> <确认密码>"
+password_unconformity = "&c两次密码输入不一致"
 
