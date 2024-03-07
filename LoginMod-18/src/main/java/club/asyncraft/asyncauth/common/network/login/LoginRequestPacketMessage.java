@@ -1,10 +1,9 @@
-package club.asyncraft.asyncauth.common.network;
+package club.asyncraft.asyncauth.common.network.login;
 
 import club.asyncraft.asyncauth.common.util.ByteBufUtils;
 import club.asyncraft.asyncauth.server.PlayerManager;
 import club.asyncraft.asyncauth.common.util.MessageUtils;
 import club.asyncraft.asyncauth.server.util.SqlUtils;
-import club.asyncraft.asyncauth.server.util.i18n.TranslationContext;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,7 +41,6 @@ public class LoginRequestPacketMessage {
                     return;
                 }
                 if (SqlUtils.checkPassword(player, message.getPassword())) {
-                    //TODO 处理登录请求(执行登录命令)
                     /*MinecraftServer server = ctx.get().getSender().getServer();
                     CommandSourceStack source = server.createCommandSourceStack();
                     server.getCommands().performCommand(source,"/authme forcelogin " + player.getName().getString());*/

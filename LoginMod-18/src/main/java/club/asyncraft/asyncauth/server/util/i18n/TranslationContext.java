@@ -62,8 +62,10 @@ public class TranslationContext {
         clientMessage = new ClientMessageDTO();
         clientMessage.setAlreadyLoginMsg(translate("login.already_login"));
         clientMessage.setPasswordTooShort(translate("login.too_short"));
+        clientMessage.setMinLength(MyModConfig.minLength.get());
         clientMessage.setLoginCommandUsage(translate("command.login_usage"));
         clientMessage.setRegisterCommandUsage(translate("command.register_usage"));
+        clientMessage.setPasswordUnconformity(translate("command.password_unconformity"));
 //        TomlParseResult parseResult = Toml.parse(langFile.getAbsolutePath());
         //langConfig = new ConfigMap(parseResult);
     }

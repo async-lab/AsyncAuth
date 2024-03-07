@@ -1,5 +1,7 @@
 package club.asyncraft.asyncauth.server;
 
+import club.asyncraft.asyncauth.common.network.CommonPacketManager;
+import club.asyncraft.asyncauth.common.network.login.LoginResponsePacketMessage;
 import club.asyncraft.asyncauth.common.util.MessageUtils;
 import club.asyncraft.asyncauth.server.config.MyModConfig;
 import club.asyncraft.asyncauth.server.util.SqlUtils;
@@ -8,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.network.NetworkDirection;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,7 +45,7 @@ public class PlayerManager {
                         unRegisterPlayers.forEach(s -> {
                             ServerPlayer player = playerList.getPlayer(UUID.fromString(s));
                             if (player != null) {
-                                MessageUtils.sendConfigMessageOnServer(player,"login.register_info");
+                                MessageUtils.sendConfigMessageOnServer(player,"register.register_info");
                             }
                         });
                     }
@@ -55,6 +58,7 @@ public class PlayerManager {
         String uuid = player.getStringUUID();
         unLoginPlayers.remove(uuid);
         unRegisterPlayers.remove(uuid);
+        CommonPacketManager.loginResponseChannel.sendTo(new LoginResponsePacketMessage(true),player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
     }
 
     public static void subscribeUnLoginPlayer(Player player) {

@@ -7,6 +7,6 @@ public class ClientPlayerEventHandler {
 
     public static void onPlayerLogout(ClientPlayerNetworkEvent.LoggedOutEvent event) {
         ClientModContext.enable = false;
+        ClientModContext.hasLogin = false;
     }
-
 }

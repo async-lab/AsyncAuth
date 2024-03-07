@@ -23,6 +23,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkDirection;
+import org.apache.commons.lang3.StringUtils;
 
 @Mod.EventBusSubscriber(modid = "async_auth", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.DEDICATED_SERVER)
 public class PlayerEventHandler {
@@ -42,7 +43,7 @@ public class PlayerEventHandler {
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getPlayer();
         PlayerManager.subscribeUnLoginPlayer(player);
-        CommonPacketManager.clientInitializeChannel.sendTo(new ClientInitializeMessage(SqlUtils.isRegistered(player), TranslationContext.clientMessage), ((ServerPlayer) player).connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+        CommonPacketManager.clientInitializeChannel.sendTo(new ClientInitializeMessage(true, TranslationContext.clientMessage), ((ServerPlayer) player).connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
     }
 
     @SubscribeEvent
@@ -58,8 +59,15 @@ public class PlayerEventHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent
     public static void onPlayerChat(ServerChatEvent event) {
+        String prefix = StringUtils.split(event.getMessage())[0];
+        if (StringUtils.isEmpty(prefix)) {
+            return;
+        }
+        if (MessageUtils.isRegisterPrefix(prefix) || MessageUtils.isLoginPrefix(prefix)) {
+            return;
+        }
         ServerPlayer player = event.getPlayer();
         verify(player, event, true);
     }
@@ -72,14 +80,14 @@ public class PlayerEventHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerCommand(CommandEvent event) {
         Entity entity = event.getParseResults().getContext().getSource().getEntity();
         if (entity instanceof Player) {
             Player player = (Player) entity;
             verify(player,event,true);
         }
-    }
+    }*/
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerPlace(BlockEvent.EntityPlaceEvent event) {

@@ -20,4 +20,22 @@ public class MessageUtils {
         Minecraft.getInstance().player.sendMessage(new TextComponent(msg.replace("&","§")),Util.NIL_UUID);
     }
 
+    public static boolean isLoginPrefix(String prefix) {
+        String[] info = new String[]{"/login","/l"};
+        for (String s : info) {
+            if (s.equalsIgnoreCase(prefix))
+                return true;
+        }
+        return false;
+    }
+
+    public static boolean isRegisterPrefix(String prefix) {
+        String[] info = new String[]{"/register","/reg"};
+        for (String s : info) {
+            if (s.equalsIgnoreCase(prefix))
+                return true;
+        }
+        return false;
+    }
+
 }

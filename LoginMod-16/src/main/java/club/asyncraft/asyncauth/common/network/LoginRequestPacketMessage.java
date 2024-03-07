@@ -41,7 +41,6 @@ public class LoginRequestPacketMessage {
                 return;
             }
             if (SqlUtils.checkPassword(player.getName().getString(), message.getPassword())) {
-                //TODO 处理登录请求(执行登录命令)
                 MinecraftServer server = ctx.get().getSender().getServer();
                 CommandSource source = server.createCommandSourceStack();
                 server.getCommands().performCommand(source,"/authme forcelogin " + player.getName().getString());
