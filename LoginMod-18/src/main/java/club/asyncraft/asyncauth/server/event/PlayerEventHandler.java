@@ -1,5 +1,6 @@
 package club.asyncraft.asyncauth.server.event;
 
+import club.asyncraft.asyncauth.AsyncAuth;
 import club.asyncraft.asyncauth.common.network.ClientInitializeMessage;
 import club.asyncraft.asyncauth.common.network.CommonPacketManager;
 import club.asyncraft.asyncauth.common.util.MessageUtils;
@@ -25,7 +26,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkDirection;
 import org.apache.commons.lang3.StringUtils;
 
-@Mod.EventBusSubscriber(modid = "async_auth", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.DEDICATED_SERVER)
+@Mod.EventBusSubscriber(modid = AsyncAuth.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.DEDICATED_SERVER)
 public class PlayerEventHandler {
 
 /*
@@ -59,7 +60,7 @@ public class PlayerEventHandler {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerChat(ServerChatEvent event) {
         String prefix = StringUtils.split(event.getMessage())[0];
         if (StringUtils.isEmpty(prefix)) {
@@ -80,14 +81,14 @@ public class PlayerEventHandler {
         }
     }
 
-    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerCommand(CommandEvent event) {
         Entity entity = event.getParseResults().getContext().getSource().getEntity();
         if (entity instanceof Player) {
             Player player = (Player) entity;
             verify(player,event,true);
         }
-    }*/
+    }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerPlace(BlockEvent.EntityPlaceEvent event) {

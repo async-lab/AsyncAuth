@@ -21,8 +21,7 @@ public class MessageUtils {
     }
 
     public static boolean isLoginPrefix(String prefix) {
-        String[] info = new String[]{"/login","/l"};
-        for (String s : info) {
+        for (String s : CommandTabSupport.LOGIN_COMMANDS) {
             if (s.equalsIgnoreCase(prefix))
                 return true;
         }
@@ -30,8 +29,7 @@ public class MessageUtils {
     }
 
     public static boolean isRegisterPrefix(String prefix) {
-        String[] info = new String[]{"/register","/reg"};
-        for (String s : info) {
+        for (String s : CommandTabSupport.REGISTER_COMMANDS) {
             if (s.equalsIgnoreCase(prefix))
                 return true;
         }
