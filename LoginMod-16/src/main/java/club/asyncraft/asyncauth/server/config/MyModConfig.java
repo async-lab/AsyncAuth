@@ -15,12 +15,11 @@ public class MyModConfig {
     public static final ForgeConfigSpec.ConfigValue<Boolean> useSSL;
     public static final ForgeConfigSpec.ConfigValue<String> address;
 
-    public static final String MSG_TABLE = "message";
-    public static final ForgeConfigSpec.ConfigValue<String> prefix;
-    public static final ForgeConfigSpec.ConfigValue<String> alreadyLogin;
-    public static final ForgeConfigSpec.ConfigValue<String> unRegisteredMsg;
-    public static final ForgeConfigSpec.ConfigValue<String> loginCommandUsage;
-    public static final ForgeConfigSpec.ConfigValue<String> passwordIncorrect;
+    public static final ForgeConfigSpec.ConfigValue<Integer> ticks;
+
+    public static final ForgeConfigSpec.ConfigValue<String> language;
+
+    public static final ForgeConfigSpec.ConfigValue<Integer> minLength;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -28,22 +27,20 @@ public class MyModConfig {
         builder.push(DATABASE_TABLE);
         port = builder.comment("mysql port")
                 .defineInRange("port",3306,1,65535);
-        username = builder.define("username","authme");
+        username = builder.define("username","user");
         password = builder.define("password","123456");
         database = builder.comment("mysql database name")
-                .define("database","authme");
-        tableName = builder.define("tableName","authme");
+                .define("database","asyncauth");
+        tableName = builder.define("tableName","asyncauth");
         useSSL = builder.define("useSSL",true);
         address = builder.define("address","127.0.0.1");
         builder.pop();
 
-        builder.push(MSG_TABLE);
-        alreadyLogin = builder.define("already_login","&c您已经登录了");
-        prefix = builder.define("prefix","&b&lAsyncraft &r&e» ");
-        unRegisteredMsg = builder.define("un_registered","&c您还未注册，请先注册");
-        loginCommandUsage = builder.define("login_command_usage","&c用法: {cmd} <你的密码>");
-        passwordIncorrect = builder.define("password.incorrect","&c密码错误");
-        builder.pop();
+        ticks = builder.comment("发送登录信息间隔时间(单位: tick)").defineInRange("ticks",40,1,200);
+
+        language = builder.comment("与locals文件中的文件名保持一致").define("lang","zh-CN");
+
+        minLength = builder.comment("密码最小长度").defineInRange("minLength",6,6,50);
 
         SPEC = builder.build();
     }

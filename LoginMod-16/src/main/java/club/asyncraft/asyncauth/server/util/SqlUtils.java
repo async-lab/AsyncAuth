@@ -1,29 +1,29 @@
 package club.asyncraft.asyncauth.server.util;
 
+import club.asyncraft.asyncauth.common.util.LoggerUtils;
 import club.asyncraft.asyncauth.server.ServerModContext;
 import club.asyncraft.asyncauth.server.config.MyModConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.extern.slf4j.Slf4j;
 import net.minecraft.entity.player.PlayerEntity;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.function.Function;
+import java.util.HashMap;
+import java.util.Map;
 
-@Slf4j
 public class SqlUtils {
 
     private static String tableName;
 
-    private static String remotePasswordCache;
+    private static final Map<String, String> playerPasswordCache = new HashMap<>();
 
     public static void initDataSource() {
-
+        Logger log = LoggerUtils.getLogger();
         try {
             HikariConfig config = new HikariConfig();
             config.setDriverClassName("com.mysql.cj.jdbc.Driver");
@@ -35,55 +35,92 @@ public class SqlUtils {
             log.info("数据库已连接");
         } catch (Exception e) {
             log.info("连接数据库失败");
+            ServerModContext.dataSource = null;
             e.printStackTrace();
         }
+
+        executeStatement(statement -> {
+            String sql = "create table if not exists " + tableName + " (" +
+                    "id bigint(20) not null auto_increment PRIMARY KEY ," +
+                    "username varchar(50) not null ," +
+                    "realname varchar(50) not null ," +
+                    "password varchar(255) not null ," +
+                    "index(username)" +
+                    ");";
+            statement.executeUpdate(sql);
+            return null;
+        });
     }
 
     public static boolean isRegistered(PlayerEntity player) {
-        return Boolean.TRUE.equals(executeStatement((statement) -> {
-            String sql = "SELECT password from " + tableName + " where realname= '" + player.getName().getString() + "'";
-            try {
-                ResultSet result = statement.executeQuery(sql);
-                if (result.next()) {
-                    remotePasswordCache = result.getString("password");
-                    result.close();
-                    return true;
-                }
-                result.close();
-                return false;
+        return Boolean.TRUE.equals(getRawPassword(player) != null);
+    }
 
-            } catch (SQLException e) {
-                log.error(e.getLocalizedMessage());
+    public static boolean checkPassword(PlayerEntity player, String password) {
+        if (StringUtils.isEmpty(password)) {
+            return false;
+        }
+        String rawPassword = getRawPassword(player);
+        String encodedPassword = PasswordEncoder.encodePassword(password, PasswordEncoder.resolvePassword(rawPassword).getRight());
+        return encodedPassword.equals(rawPassword);
+    }
+
+    public static boolean register(PlayerEntity player, String password) {
+        if (isRegistered(player)) {
+            return false;
+        }
+        String encodedPassword = PasswordEncoder.encodePassword(password);
+        String sql = "INSERT INTO " + tableName + "(username,realname,password) values ('" +
+                player.getName().getString().toLowerCase() + "','" +
+                player.getName().getString() + "','" +
+                encodedPassword + "');";
+        executeStatement(statement -> {
+            statement.executeUpdate(sql);
+            return null;
+        });
+        playerPasswordCache.put(player.getStringUUID(), encodedPassword);
+        return true;
+    }
+
+    public static boolean changePassword(PlayerEntity player, String password) {
+        if (!isRegistered(player)) {
+            return false;
+        }
+        String encodedPassword = PasswordEncoder.encodePassword(password);
+        String sql = "UPDATE " + tableName + " set password =" + "'" + encodedPassword + "' where username = '" + player.getName().getString().toLowerCase() + "';";
+        executeStatement(statement -> {
+            statement.executeUpdate(sql);
+            return null;
+        });
+        String uuid = player.getStringUUID();
+        if (playerPasswordCache.containsKey(uuid)) {
+            playerPasswordCache.replace(uuid, encodedPassword);
+        } else {
+            playerPasswordCache.put(uuid, encodedPassword);
+        }
+        return true;
+    }
+
+    private static String getRawPassword(PlayerEntity player) {
+        String uuid = player.getStringUUID();
+        if (playerPasswordCache.containsKey(uuid)) {
+            return playerPasswordCache.get(uuid);
+        }
+        return executeStatement((statement -> {
+            String sql = "SELECT password from " + tableName + " where username= '" + player.getName().getString().toLowerCase() + "'";
+            ResultSet result = statement.executeQuery(sql);
+            if (result.next()) {
+                String password = result.getString("password");
+                playerPasswordCache.put(player.getStringUUID(), password);
+                result.close();
+                return password;
             }
+            result.close();
             return null;
         }));
     }
 
-    public static boolean checkPassword(String username, String password) {
-        String encodedPassword = PasswordEncoder.encodePassword(password, resolveAuthmePassword(remotePasswordCache).getRight());
-        if (!StringUtils.isEmpty(remotePasswordCache)) {
-            return encodedPassword.equals(remotePasswordCache);
-        } else {
-            String remotePassword = executeStatement((statement -> {
-                try {
-                    ResultSet resultSet = statement.executeQuery("SELECT password from " + tableName + " where realname= '" + username + "'");
-                    if (resultSet.next()) {
-                        resultSet.close();
-                        return resultSet.getString("password");
-                    }
-                } catch (SQLException e) {
-                    log.error(e.getLocalizedMessage());
-                }
-                return null;
-            }));
-            if (StringUtils.isEmpty(remotePassword)) {
-                return false;
-            }
-            return encodedPassword.equals(remotePassword);
-        }
-    }
-
-    private static <V> V executeStatement(Function<Statement, V> statementFunction) {
+    private static <V> V executeStatement(ThrowingFunction<Statement, V> statementFunction) {
         if (ServerModContext.dataSource == null) {
             return null;
         }
@@ -95,12 +132,12 @@ public class SqlUtils {
             connection.close();
             return result;
         } catch (SQLException e) {
-            log.info(e.getLocalizedMessage());
+            LoggerUtils.getLogger().error(e.getLocalizedMessage());
         }
         return null;
     }
 
-    private static <V> V execute(Function<Connection, V> statementFunction) {
+    private static <V> V execute(ThrowingFunction<Connection, V> statementFunction) {
         if (ServerModContext.dataSource == null) {
             return null;
         }
@@ -110,16 +147,14 @@ public class SqlUtils {
             connection.close();
             return result;
         } catch (SQLException e) {
-            log.info(e.getLocalizedMessage());
+             LoggerUtils.getLogger().error(e.getLocalizedMessage());
         }
         return null;
     }
 
-    //left password, right salt
-    private static Pair<String, String> resolveAuthmePassword(String data) {
-        String salt = data.substring(5, 21);
-        String password = data.substring(22);
-        return Pair.of(password, salt);
+    @FunctionalInterface
+    private interface ThrowingFunction<T, R> {
+        R apply(T t) throws SQLException;
     }
 
 }

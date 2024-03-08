@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '7.0.0'
@@ -146,7 +147,7 @@ tasks.named('jar', Jar).configure {
     finalizedBy 'reobfJar'
 }
 
-reobf.create('jarJar')
+//reobf.create('jarJar')
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
@@ -157,6 +158,31 @@ reobf {
 }
 
 shadowJar.finalizedBy('reobfShadowJar')
+
+/*tasks.register('clientSizeJar', ShadowJar) {
+    mergeServiceFiles()
+    dependencies {
+//        include(dependency("com.zaxxer:HikariCP"))
+//        include(dependency("com.mysql:mysql-connector-j"))
+    }
+    manifest.attributes 'Main-Class': "club.asyncraft.asyncauth.AsyncAuth"
+    archiveClassifier = 'bootstrapNode'
+    archiveFileName = "${mod_id}-${version}-client.jar"
+}
+tasks.register('serverSizeJar', ShadowJar) {
+    mergeServiceFiles()
+    dependencies {
+        include(dependency("com.zaxxer:HikariCP"))
+//        include(dependency("org.tomlj:tomlj"))
+//        include(dependency("com.mysql:mysql-connector-j"))
+    }
+    manifest.attributes 'Main-Class': "club.asyncraft.asyncauth.AsyncAuth"
+    archiveClassifier = 'bootstrapNode'
+    archiveFileName = "${mod_id}-${version}-server.jar"
+    relocate "com.zaxxer.hikari", "com.github.asyncraft.shadow.hikari"
+}*/
+
+
 
 shadowJar {
     mergeServiceFiles()

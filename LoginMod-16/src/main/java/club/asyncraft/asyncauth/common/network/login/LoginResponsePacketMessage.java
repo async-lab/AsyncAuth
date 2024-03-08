@@ -1,4 +1,4 @@
-package club.asyncraft.asyncauth.common.network;
+package club.asyncraft.asyncauth.common.network.login;
 
 import club.asyncraft.asyncauth.client.ClientModContext;
 import io.netty.buffer.ByteBuf;
