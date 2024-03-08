@@ -1,16 +1,14 @@
-package club.asyncraft.asyncauth.common.network;
+package club.asyncraft.asyncauth.common.network.login;
 
-import club.asyncraft.asyncauth.server.util.SqlUtils;
 import club.asyncraft.asyncauth.common.util.ByteBufUtils;
 import club.asyncraft.asyncauth.common.util.MessageUtils;
-import club.asyncraft.asyncauth.server.config.MyModConfig;
+import club.asyncraft.asyncauth.server.PlayerManager;
+import club.asyncraft.asyncauth.server.util.SqlUtils;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -36,17 +34,22 @@ public class LoginRequestPacketMessage {
 
         ctx.get().enqueueWork(() -> {
             ServerPlayerEntity player = ctx.get().getSender();
-            if (!SqlUtils.isRegistered(player)){
-                MessageUtils.sendMessage(player,MessageUtils.convertMessage(MyModConfig.unRegisteredMsg.get()));
-                return;
-            }
-            if (SqlUtils.checkPassword(player.getName().getString(), message.getPassword())) {
-                MinecraftServer server = ctx.get().getSender().getServer();
-                CommandSource source = server.createCommandSourceStack();
-                server.getCommands().performCommand(source,"/authme forcelogin " + player.getName().getString());
-            } else {
-                MessageUtils.sendMessage(player,MessageUtils.convertMessage(MyModConfig.passwordIncorrect.get()));
-            }
+            player.getServer().execute(() -> {
+
+                if (!SqlUtils.isRegistered(player)){
+                    MessageUtils.sendConfigMessageOnServer(player,"login.un_registered");
+                    return;
+                }
+                if (SqlUtils.checkPassword(player, message.getPassword())) {
+                    /*MinecraftServer server = ctx.get().getSender().getServer();
+                    CommandSourceStack source = server.createCommandSourceStack();
+                    server.getCommands().performCommand(source,"/authme forcelogin " + player.getName().getString());*/
+                    PlayerManager.loginPlayer(player);
+                    MessageUtils.sendConfigMessageOnServer(player,"login.success");
+                } else {
+                    MessageUtils.sendConfigMessageOnServer(player,"login.password_incorrect");
+                }
+            });
         });
         ctx.get().setPacketHandled(true);
     }

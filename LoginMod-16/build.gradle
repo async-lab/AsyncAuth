@@ -154,7 +154,7 @@ shadowJar {
     dependencies {
         include(dependency("com.zaxxer:HikariCP"))
 //        include(dependency("org.slf4j:slf4j-api"))
-        include(dependency("com.mysql:mysql-connector-j"))
+//        include(dependency("com.mysql:mysql-connector-j"))
     }
 
     relocate "com.zaxxer.hikari", "com.github.asyncraft.shadow.hikari"

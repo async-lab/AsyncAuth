@@ -1,0 +1,23 @@
+package club.asyncraft.asyncauth.common.network;
+
+import lombok.Data;
+
+import java.io.Serializable;
+
+@Data
+public class ClientMessageDTO implements Serializable {
+
+    private String alreadyLoginMsg;
+
+    private String loginCommandUsage;
+
+    private String registerCommandUsage;
+
+    private String passwordTooShort;
+    private Integer minLength;
+
+    private String passwordUnconformity;
+
+    private static final long serialVersionUID = 1L;
+
+}
