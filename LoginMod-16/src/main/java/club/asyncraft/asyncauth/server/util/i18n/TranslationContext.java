@@ -5,6 +5,7 @@ import club.asyncraft.asyncauth.common.network.ClientMessageDTO;
 import club.asyncraft.asyncauth.server.config.MyModConfig;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlFormat;
+import cpw.mods.modlauncher.TransformingClassLoader;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -12,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.net.JarURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +24,7 @@ import java.util.Enumeration;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 
 public class TranslationContext {
 
@@ -38,29 +41,19 @@ public class TranslationContext {
         LANG_CONFIG_PATH = localsPath.toString();
     }
 
-    public static void init() throws IOException {
+    public static void init() throws IOException, URISyntaxException {
 
         File localsDir = new File(LANG_CONFIG_PATH);
         if (!localsDir.exists()) {
             localsDir.mkdir();
         }
 
-        /*createTempDir(AsyncAuth.class.getClassLoader().getResourceAsStream("locals"),file -> {
-            for (File listFile : file.listFiles()) {
-                System.out.println(listFile.getName());
-            }
-        });*/
-
-        String resourcePath = AsyncAuth.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-        System.out.println(resourcePath);
-        //TODO 获取jar包路径
-        String jarPath = resourcePath.substring(1, resourcePath.indexOf("#")) + "!/";
-        JarFile jarFile = ((JarURLConnection) new URL("jar:file:///" + jarPath).openConnection()).getJarFile();
-        Enumeration<JarEntry> jarEntry = jarFile.entries();
-        while (jarEntry.hasMoreElements()) {
-            JarEntry entry = jarEntry.nextElement();
-            String name = entry.getName();
-            if (name.startsWith("locals") && !entry.isDirectory()) {
+        InputStream resourceStream = AsyncAuth.class.getClassLoader().getResourceAsStream("");
+        JarInputStream jarInputStream = new JarInputStream(resourceStream);
+        JarEntry jarEntry;
+        while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
+            String name = jarEntry.getName();
+            if (name.startsWith("locals") && !jarEntry.isDirectory()) {
                 languageConfigHandle(TranslationContext.class.getClassLoader().getResourceAsStream(name),name);
             }
         }
@@ -82,23 +75,6 @@ public class TranslationContext {
         clientMessage.setPasswordUnconformity(translate("command.password_unconformity"));
 //        TomlParseResult parseResult = Toml.parse(langFile.getAbsolutePath());
         //langConfig = new ConfigMap(parseResult);
-    }
-
-    private static void createTempDir(InputStream inputStream, Consumer<File> execution) throws IOException {
-        File tempDir = new File(FMLPaths.GAMEDIR.get().toUri().getPath(),"asyncauthtemp");
-
-        BufferedOutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(tempDir.toPath()));
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-        int data = bufferedInputStream.read();
-        while (data != -1) {
-            outputStream.write(data);
-            data = bufferedInputStream.read();
-        }
-        outputStream.flush();
-        outputStream.close();
-        bufferedInputStream.close();
-        execution.accept(tempDir);
-        tempDir.deleteOnExit();
     }
 
     private static void languageConfigHandle(InputStream inputStream,String name) throws IOException {
