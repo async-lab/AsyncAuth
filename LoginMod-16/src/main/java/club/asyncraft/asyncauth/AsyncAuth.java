@@ -13,12 +13,15 @@ import lombok.extern.slf4j.Slf4j;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.forgespi.language.IModInfo;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -49,9 +52,13 @@ public class AsyncAuth {
         Logger log = LoggerUtils.getLogger();
         ServerModContext.serverInstance = ServerLifecycleHooks.getCurrentServer();
         log.info("加载语言配置文件...");
+
+
         try {
             TranslationContext.init();
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
         log.info("加载数据库...");

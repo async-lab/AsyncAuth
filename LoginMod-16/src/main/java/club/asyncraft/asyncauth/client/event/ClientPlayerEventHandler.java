@@ -2,9 +2,11 @@ package club.asyncraft.asyncauth.client.event;
 
 import club.asyncraft.asyncauth.AsyncAuth;
 import club.asyncraft.asyncauth.client.ClientModContext;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -43,7 +45,7 @@ public class ClientPlayerEventHandler {
         if (!isEnabled()) {
             return;
         }
-        if (!hasLogin()) {
+        if (!hasLogin() && !Minecraft.getInstance().player.isDeadOrDying()) {
             event.setCanceled(true);
         }
     }
