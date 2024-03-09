@@ -143,7 +143,7 @@ tasks.named('jar', Jar).configure {
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
-
+    archiveFileName = "${mod_name}-${mod_version}-1.18.x-client.jar"
     finalizedBy 'reobfJar'
 }
 
@@ -159,41 +159,28 @@ reobf {
 
 shadowJar.finalizedBy('reobfShadowJar')
 
-/*tasks.register('clientSizeJar', ShadowJar) {
-    mergeServiceFiles()
-    dependencies {
-//        include(dependency("com.zaxxer:HikariCP"))
-//        include(dependency("com.mysql:mysql-connector-j"))
-    }
-    manifest.attributes 'Main-Class': "club.asyncraft.asyncauth.AsyncAuth"
-    archiveClassifier = 'bootstrapNode'
-    archiveFileName = "${mod_id}-${version}-client.jar"
-}
-tasks.register('serverSizeJar', ShadowJar) {
-    mergeServiceFiles()
-    dependencies {
-        include(dependency("com.zaxxer:HikariCP"))
-//        include(dependency("org.tomlj:tomlj"))
-//        include(dependency("com.mysql:mysql-connector-j"))
-    }
-    manifest.attributes 'Main-Class': "club.asyncraft.asyncauth.AsyncAuth"
-    archiveClassifier = 'bootstrapNode'
-    archiveFileName = "${mod_id}-${version}-server.jar"
-    relocate "com.zaxxer.hikari", "com.github.asyncraft.shadow.hikari"
-}*/
-
-
-
 shadowJar {
-    mergeServiceFiles()
     dependencies {
         include(dependency("com.zaxxer:HikariCP"))
-//        include(dependency("org.tomlj:tomlj"))
-//        include(dependency("com.mysql:mysql-connector-j"))
     }
-
+    mergeServiceFiles()
     relocate "com.zaxxer.hikari", "com.github.asyncraft.shadow.hikari"
+    archiveFileName = "${mod_name}-${mod_version}-1.18.x-server.jar"
+}
 
+tasks.register('modJar') {
+    dependsOn(clientJar)
+    dependsOn(serverJar)
+}
+
+//打包客户端mod
+tasks.register('clientJar') {
+    dependsOn(jar)
+}
+
+//打包服务端mod
+tasks.register('serverJar') {
+    dependsOn(shadowJar)
 }
 
 
