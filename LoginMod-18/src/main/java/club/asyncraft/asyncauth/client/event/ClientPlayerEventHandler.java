@@ -3,6 +3,7 @@ package club.asyncraft.asyncauth.client.event;
 import club.asyncraft.asyncauth.AsyncAuth;
 import club.asyncraft.asyncauth.client.ClientModContext;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -44,7 +45,7 @@ public class ClientPlayerEventHandler {
         if (!isEnabled()) {
             return;
         }
-        if (!hasLogin()) {
+        if (!hasLogin()  && !Minecraft.getInstance().player.isDeadOrDying()) {
             event.setCanceled(true);
         }
     }

@@ -11,4 +11,6 @@ public class ServerModContext {
 
     public static MinecraftServer serverInstance;
 
+    public static String modJarPath;
+
 }

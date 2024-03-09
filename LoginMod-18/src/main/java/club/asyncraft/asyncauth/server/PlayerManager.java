@@ -8,6 +8,7 @@ import club.asyncraft.asyncauth.server.util.SqlUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.network.NetworkDirection;
@@ -59,9 +60,11 @@ public class PlayerManager {
         unLoginPlayers.remove(uuid);
         unRegisterPlayers.remove(uuid);
         CommonPacketManager.loginResponseChannel.sendTo(new LoginResponsePacketMessage(true),player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+        setPlayerSpeed(.1,player);
     }
 
     public static void subscribeUnLoginPlayer(Player player) {
+        setPlayerSpeed(0,player);
         String uuid = player.getStringUUID();
         if (SqlUtils.isRegistered(player)) {
             if (unLoginPlayers.contains(uuid)) {
@@ -85,6 +88,10 @@ public class PlayerManager {
     public static boolean hasLogin(Player player) {
         String uuid = player.getStringUUID();
         return !(unLoginPlayers.contains(uuid) || unRegisterPlayers.contains(uuid));
+    }
+
+    private static void setPlayerSpeed(double value,Player player) {
+        player.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(value);
     }
 
 }
