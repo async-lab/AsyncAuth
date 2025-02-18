@@ -1,5 +1,6 @@
 package club.asynclab.asyncraft.asyncauth.command;
 
+import club.asynclab.asyncraft.asyncauth.AsyncAuth;
 import club.asynclab.asyncraft.asyncauth.AuthManager;
 import club.asynclab.asyncraft.asyncauth.ModConfig;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -43,8 +44,10 @@ public class AdminCommands {
         if (sender != null)
             sender.sendMessage(new TextComponent(result ? "Succeed" : "Player not registered"),sender.getUUID());
 
-        if (result)
+        if (result) {
             player.sendMessage(new TextComponent("Password was changed by the administrator"),player.getUUID());
+            AsyncAuth.LOGGER.info("{} 's password was changed by administrator", player.getName().getString());
+        }
         return 1;
     }
 
