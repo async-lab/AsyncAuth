@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "club.asynclab.asyncraft.asyncauth.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "asyncauth.refmap.json",
+  "mixins": [
+    "CommandSourceStackMixin",
+    "ServerGamePacketListenerMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
