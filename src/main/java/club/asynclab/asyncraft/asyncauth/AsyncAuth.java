@@ -1,10 +1,15 @@
 package club.asynclab.asyncraft.asyncauth;
 
+import club.asynclab.asyncraft.asyncauth.command.AdminCommands;
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -34,6 +39,7 @@ public class AsyncAuth {
 
         DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
             MinecraftForge.EVENT_BUS.addListener(this::onServerStarting);
+            MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
             ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER , club.asynclab.asyncraft.asyncauth.ModConfig.SPEC,"AsyncAuth/config.toml");
 
         });
@@ -46,6 +52,19 @@ public class AsyncAuth {
 
     private void onServerStarting(ServerAboutToStartEvent event) {
         DatabaseManager.init();
+    }
+
+    private void registerCommands(RegisterCommandsEvent event) {
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+
+        LiteralArgumentBuilder<CommandSourceStack> main = Commands.literal("asyncauth")
+                .then(AdminCommands.adminCommand());
+
+        dispatcher.register(
+                Commands.literal("aa").redirect(dispatcher.register(main))
+        );
+
+        LOGGER.info("Commands registered");
     }
 
 }

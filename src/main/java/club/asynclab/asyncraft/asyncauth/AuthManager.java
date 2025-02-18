@@ -34,6 +34,10 @@ public class AuthManager {
         return DatabaseManager.isRegistered(player);
     }
 
+    public static boolean changePassword(ServerPlayer player,String password) {
+        return DatabaseManager.changePassword(player,password);
+    }
+
     public static boolean auth(ServerPlayer player,String password) {
         boolean result = DatabaseManager.checkPassword(player,password);
         if (result) markVerified(player);
