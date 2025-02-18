@@ -16,7 +16,14 @@ public class AuthManager {
 
     private static final Set<UUID> verifiedPlayers = ConcurrentHashMap.newKeySet();
 
+    public static void playerJoin(ServerPlayer player) {
+        player.setInvisible(true);
+        player.setInvulnerable(true);
+    }
+
     public static void markVerified(ServerPlayer player) {
+        player.setInvisible(false);
+        player.setInvulnerable(false);
         verifiedPlayers.add(player.getUUID());
     }
 
