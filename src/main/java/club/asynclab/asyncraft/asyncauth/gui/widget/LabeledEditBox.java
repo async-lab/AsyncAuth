@@ -2,6 +2,7 @@ package club.asynclab.asyncraft.asyncauth.gui.widget;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -22,13 +23,14 @@ public class LabeledEditBox extends EditBox {
     }
 
     @Override
-    public void renderButton(@NotNull PoseStack pose, int mouseX, int mouseY, float delta) {
-        font.draw(pose, labelText,
-                this.x,
-                this.y - font.lineHeight - 2,
-                0xFFFFFF); // 白色
+    public void renderWidget(GuiGraphics pose, int mouseX, int mouseY, float delta) {
+        pose.drawString(font,labelText,
+                this.getX(),
+                this.getY() - font.lineHeight - 2,
+                0xFFFFFF);
 
-        super.renderButton(pose, mouseX, mouseY, delta);
+        super.renderWidget(pose, mouseX, mouseY, delta);
     }
+
 
 }

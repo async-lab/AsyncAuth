@@ -4,23 +4,21 @@ import club.asynclab.asyncraft.asyncauth.gui.widget.LabeledEditBox;
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler;
 import club.asynclab.asyncraft.asyncauth.network.packet.ClientQuitPacket;
 import club.asynclab.asyncraft.asyncauth.network.packet.LoginRequestPacket;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
-import lombok.Setter;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class LoginScreen extends Screen {
 
-    private static final Component TITLE = new TranslatableComponent("gui.asyncauth.title_login");
+    private static final Component TITLE = Component.translatable("gui.asyncauth.title_login");
     private EditBox passwordField;
     private Button submitButton;
 
@@ -39,28 +37,21 @@ public class LoginScreen extends Screen {
                 centerX - 100,  // x坐标
                 100,            // y坐标
                 200, 20,        // 宽度/高度
-                new TranslatableComponent("gui.asyncauth.password"),
-                new TextComponent(""));
+                Component.translatable("gui.asyncauth.password"),
+                Component.literal(""));
 
         passwordField.setFormatter((text, pos) ->
-                new TextComponent("*".repeat(text.length())).getVisualOrderText());
+                Component.literal("*".repeat(text.length())).getVisualOrderText());
 
         this.addRenderableWidget(passwordField);
+        this.submitButton = Button.builder(Component.translatable("gui.asyncauth.submit_login"), this::onSubmitButtonPressed)
+                .bounds(centerX - 50,150,100,20)
+                .build();
 
-        this.submitButton = new Button(
-                centerX - 50,   // x坐标
-                150,            // y坐标
-                100, 20,        // 宽度/高度
-                new TranslatableComponent("gui.asyncauth.submit_login"),
-                this::onSubmitButtonPressed);
 
-        Button exitButton = new Button(
-                20,
-                this.height - 40,
-                100, 20,
-                new TranslatableComponent("gui.asyncauth.exit"),
-                (btn) -> NetworkHandler.INSTANCE.sendToServer(new ClientQuitPacket())
-        );
+        Button exitButton = Button.builder(Component.translatable("gui.asyncauth.exit"),btn -> NetworkHandler.INSTANCE.sendToServer(new ClientQuitPacket()))
+                .bounds(20,this.height - 40,100,20)
+                .build();
 
         this.addRenderableWidget(submitButton);
         this.addRenderableWidget(exitButton);
@@ -69,7 +60,7 @@ public class LoginScreen extends Screen {
     private void onSubmitButtonPressed(Button button) {
         String input = passwordField.getValue();
         if (input.isEmpty()) {
-            errorMessage = new TranslatableComponent("msg.asyncauth.login_empty_password");
+            errorMessage = Component.translatable("msg.asyncauth.login_empty_password");
             return;
         }
         login();
@@ -81,14 +72,14 @@ public class LoginScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics poseStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(poseStack);
-        drawCenteredString(poseStack, this.font, this.title,
+        poseStack.drawCenteredString(this.font, this.title,
                 this.width / 2, 20, 0xFFFFFF);
 
         if (errorMessage != null) {
-            int errorY = submitButton.y - 10;
-            drawCenteredString(poseStack, font, errorMessage, width/2, errorY, 0xFF0000);
+            int errorY = submitButton.getY() - 10;
+            poseStack.drawCenteredString(font, errorMessage, width/2, errorY, 0xFF0000);
         }
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
@@ -105,14 +96,14 @@ public class LoginScreen extends Screen {
             this.onSubmitButtonPressed(submitButton);
             return true;
         }
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+        if (keyCode == InputConstants.KEY_ESCAPE) {
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     public void displayWrongPasswordInfo() {
-        errorMessage = new TranslatableComponent("msg.asyncauth.login_wrong_password");
+        errorMessage = Component.translatable("msg.asyncauth.login_wrong_password");
     }
 
 }

@@ -5,8 +5,7 @@ import club.asynclab.asyncraft.asyncauth.network.packet.ClientInitializePacket;
 import club.asynclab.asyncraft.asyncauth.network.packet.ClientQuitPacket;
 import club.asynclab.asyncraft.asyncauth.network.packet.LoginRequestPacket;
 import club.asynclab.asyncraft.asyncauth.network.packet.LoginResponsePacket;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -53,7 +52,7 @@ public class NetworkHandler {
                 (msg,ctx) -> {
                     ServerPlayer player = ctx.get().getSender();
                     if (player != null)
-                        player.connection.disconnect(new TextComponent("UnAuthorized"));
+                        player.connection.disconnect(Component.literal("UnAuthorized"));
                 }
         );
     }

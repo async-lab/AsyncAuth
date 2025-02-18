@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import javax.sql.DataSource;
 
 @Mod("asyncauth")
+@SuppressWarnings("removal")
 public class AsyncAuth {
 
     public static final String MODID = "asyncauth";
@@ -41,7 +42,6 @@ public class AsyncAuth {
             MinecraftForge.EVENT_BUS.addListener(this::onServerStarting);
             MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
             ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER , club.asynclab.asyncraft.asyncauth.ModConfig.SPEC,"AsyncAuth/config.toml");
-
         });
     }
 

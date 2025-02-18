@@ -1,11 +1,11 @@
 package club.asynclab.asyncraft.asyncauth.util;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.core.util.UuidUtil;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 public class PasswordEncoder {
 
@@ -46,7 +46,7 @@ public class PasswordEncoder {
     }
 
     private static String generateSalt() {
-        return UuidUtil.getTimeBasedUuid().toString().replace("-","").substring(0,16);
+        return UUID.randomUUID().toString().replace("-","").substring(0,16);
     }
 
 }

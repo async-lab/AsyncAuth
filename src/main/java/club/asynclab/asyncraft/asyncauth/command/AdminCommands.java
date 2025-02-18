@@ -10,9 +10,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+
+import java.awt.*;
 
 public class AdminCommands {
 
@@ -35,17 +37,17 @@ public class AdminCommands {
         int minLength = ModConfig.minLength.get();
         if (password.length() < minLength) {
             if (sender != null)
-                sender.sendMessage(new TextComponent("Password must be at least " + minLength + " characters."),sender.getUUID());
+                sender.sendSystemMessage(Component.literal("Password must be at least " + minLength + " characters."));
             return 1;
         }
 
         boolean result = AuthManager.changePassword(player,password);
 
         if (sender != null)
-            sender.sendMessage(new TextComponent(result ? "Succeed" : "Player not registered"),sender.getUUID());
+            sender.sendSystemMessage(Component.literal(result ? "Succeed" : "Player not registered"));
 
         if (result) {
-            player.sendMessage(new TextComponent("Password was changed by the administrator"),player.getUUID());
+            player.sendSystemMessage(Component.literal("Password was changed by the administrator"));
             AsyncAuth.LOGGER.info("{} 's password was changed by administrator", player.getName().getString());
         }
         return 1;
