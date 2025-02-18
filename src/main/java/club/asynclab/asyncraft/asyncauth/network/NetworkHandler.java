@@ -44,8 +44,7 @@ public class NetworkHandler {
         INSTANCE.registerMessage(ID++, LoginResponsePacket.class,
                 LoginResponsePacket::encode,
                 LoginResponsePacket::decode,
-                LoginResponsePacket::handle,
-                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+                LoginResponsePacket::handle
         );
 
         INSTANCE.registerMessage(ID++, ClientQuitPacket.class,

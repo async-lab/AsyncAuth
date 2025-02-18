@@ -1,6 +1,7 @@
 package club.asynclab.asyncraft.asyncauth.network.packet;
 
 import club.asynclab.asyncraft.asyncauth.AuthManager;
+import club.asynclab.asyncraft.asyncauth.ModConfig;
 import club.asynclab.asyncraft.asyncauth.constant.LoginResultStatusCode;
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler;
 import club.asynclab.asyncraft.asyncauth.util.ByteBufUtils;
@@ -13,6 +14,8 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -40,13 +43,13 @@ public class LoginRequestPacket {
                 ServerPlayer player = ctx.get().getSender();
                 if (player != null) {
                     if (AuthManager.hasRegistered(player)) {
-
                         NetworkHandler.INSTANCE.sendTo(new LoginResponsePacket(
-                                AuthManager.auth(ctx.get().getSender(),packet.password) ? LoginResultStatusCode.LOGIN_SUCCESS : LoginResultStatusCode.WRONG_PASSWORD),
+                                AuthManager.auth(player,packet.password) ? LoginResultStatusCode.LOGIN_SUCCESS : LoginResultStatusCode.WRONG_PASSWORD,Map.of()),
                                 player.connection.connection,
                                 NetworkDirection.PLAY_TO_CLIENT);
                     } else {
-                        NetworkHandler.INSTANCE.sendTo(new LoginResponsePacket(AuthManager.register(ctx.get().getSender(),packet.password) ? LoginResultStatusCode.LOGIN_SUCCESS : LoginResultStatusCode.REG_PASS_SHORT),
+                        NetworkHandler.INSTANCE.sendTo(new LoginResponsePacket(AuthManager.register(ctx.get().getSender(),packet.password) ? LoginResultStatusCode.LOGIN_SUCCESS : LoginResultStatusCode.REG_PASS_SHORT,
+                                        Map.of("minlength",String.valueOf(ModConfig.minLength.get()))),
                                 player.connection.connection,
                                 NetworkDirection.PLAY_TO_CLIENT);
                     }

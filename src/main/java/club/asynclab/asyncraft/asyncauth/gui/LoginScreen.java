@@ -24,7 +24,6 @@ public class LoginScreen extends Screen {
     private EditBox passwordField;
     private Button submitButton;
 
-    @Setter
     private Component errorMessage = null;
 
     public LoginScreen() {
@@ -74,14 +73,7 @@ public class LoginScreen extends Screen {
             return;
         }
         login();
-        /*if (login(input)) {
-            this.minecraft.setScreen(null);
-            this.minecraft.player.displayClientMessage(
-                    new TranslatableComponent("msg.asyncauth.login_success"), false);
-        } else {
-            errorMessage = new TranslatableComponent("msg.asyncauth.login_wrong_password");
-            passwordField.setValue("");
-        }*/
+
     }
 
     private void login() {
@@ -117,6 +109,10 @@ public class LoginScreen extends Screen {
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    public void displayWrongPasswordInfo() {
+        errorMessage = new TranslatableComponent("msg.asyncauth.login_wrong_password");
     }
 
 }

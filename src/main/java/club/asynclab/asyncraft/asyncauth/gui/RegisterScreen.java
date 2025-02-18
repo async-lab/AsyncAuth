@@ -127,4 +127,8 @@ public class RegisterScreen extends Screen {
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
+
+    public void displayPasswordTooShortMessage(String length) {
+        errorMessage = new TextComponent(new TranslatableComponent("gui.asyncauth.password_too_short").getString().replace("%min%",length));
+    }
 }
