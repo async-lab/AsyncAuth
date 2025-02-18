@@ -16,6 +16,7 @@ public class DatabaseManager {
     private static String tableName;
 
     private static final Map<String, String> playerPasswordCache = new HashMap<>();
+    private static final Map<String,String> playerNameCache = new HashMap<>();
 
     public static void init() {
 
@@ -110,6 +111,27 @@ public class DatabaseManager {
             }
             return null;
         });
+    }
+
+    /**
+     * 检查玩家名是否有效
+     */
+    public static boolean checkPlayerName(String playerName) {
+        String existedName = playerNameCache.get(playerName.toLowerCase());
+        if (existedName != null) {
+            return existedName.equals(playerName);
+        }
+
+        String sql = "SELECT realname FROM " + tableName + " WHERE username = ?";
+        String realname = SqlUtils.executeQuery(sql, stmt -> {
+            stmt.setString(1, playerName.toLowerCase());
+        }, rs -> {
+            if (rs.next()) return rs.getString("realname");
+            return null;
+        });
+        if (realname == null) return true;
+        playerNameCache.put(playerName.toLowerCase(),realname);
+        return realname.equals(playerName);
     }
     
     private static Logger log() {

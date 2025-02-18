@@ -2,8 +2,13 @@ package club.asynclab.asyncraft.asyncauth.event.server;
 
 import club.asynclab.asyncraft.asyncauth.AsyncAuth;
 import club.asynclab.asyncraft.asyncauth.AuthManager;
+import club.asynclab.asyncraft.asyncauth.DatabaseManager;
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler;
 import club.asynclab.asyncraft.asyncauth.network.packet.ClientInitializePacket;
+import club.asynclab.asyncraft.asyncauth.util.MessageUtils;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +32,10 @@ public class PlayerEventHandler {
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         ServerPlayer player = (ServerPlayer) event.getPlayer();
+        if (!DatabaseManager.checkPlayerName(player.getName().getString())) {
+            player.connection.disconnect(new TextComponent("Please choose a different player name.\n请更换一个游戏名称"));
+            return;
+        }
         NetworkHandler.INSTANCE.sendTo(new ClientInitializePacket(AuthManager.hasRegistered(player)),player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 

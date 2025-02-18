@@ -18,8 +18,6 @@ public class AuthManager {
 
     public static void markVerified(ServerPlayer player) {
         verifiedPlayers.add(player.getUUID());
-
-//        MessageUtils.sendMessage(player,"&a" + MessageUtils.getTranslatedMessage("msg.asyncauth.login_success"));
     }
 
     public static boolean isVerified(ServerPlayer player) {
@@ -50,4 +48,5 @@ public class AuthManager {
         if (result) markVerified(player);
         return result;
     }
+
 }
