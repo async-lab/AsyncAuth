@@ -42,7 +42,10 @@ public class AuthManager {
 
     public static boolean auth(ServerPlayer player,String password) {
         boolean result = checkPassword(player,password);
-        if (result) markVerified(player);
+        if (result) {
+            markVerified(player);
+            AsyncAuth.LOGGER.info("{} Logged in", player.getName());
+        }
         return result;
     }
 
@@ -76,7 +79,10 @@ public class AuthManager {
     public static boolean register(ServerPlayer player,String password) {
         if (password.length() < ModConfig.minLength.get()) return false;
         boolean result = DatabaseManager.register(player,password);
-        if (result) markVerified(player);
+        if (result) {
+            markVerified(player);
+            AsyncAuth.LOGGER.info("{} Registered and logged in", player.getName());
+        }
         return result;
     }
 
