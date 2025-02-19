@@ -1,14 +1,10 @@
 package club.asynclab.asyncraft.asyncauth.network;
 
 import club.asynclab.asyncraft.asyncauth.AsyncAuth;
-import club.asynclab.asyncraft.asyncauth.network.packet.ClientInitializePacket;
-import club.asynclab.asyncraft.asyncauth.network.packet.ClientQuitPacket;
-import club.asynclab.asyncraft.asyncauth.network.packet.LoginRequestPacket;
-import club.asynclab.asyncraft.asyncauth.network.packet.LoginResponsePacket;
+import club.asynclab.asyncraft.asyncauth.network.packet.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
@@ -44,6 +40,12 @@ public class NetworkHandler {
                 LoginResponsePacket::encode,
                 LoginResponsePacket::decode,
                 LoginResponsePacket::handle
+        );
+
+        INSTANCE.registerMessage(ID++, ClientMessagePacket.class,
+                ClientMessagePacket::encode,
+                ClientMessagePacket::decode,
+                ClientMessagePacket::handle
         );
 
         INSTANCE.registerMessage(ID++, ClientQuitPacket.class,

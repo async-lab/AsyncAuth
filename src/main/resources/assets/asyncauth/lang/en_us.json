@@ -11,5 +11,9 @@
   "gui.asyncauth.password_too_short": "The password must contain a maximum of %min% characters",
   "gui.asyncauth.submit_login": "Login",
   "gui.asyncauth.submit_register": "Sign up",
-  "gui.asyncauth.exit": "Exit"
+  "gui.asyncauth.exit": "Exit",
+
+  "msg.asyncauth.old_password_wrong": "Old password wrong",
+  "msg.asyncauth.change_password_succeed": "Password changed",
+  "msg.asyncauth.password_changed_by_admin": "Password was changed by the administrator"
 }

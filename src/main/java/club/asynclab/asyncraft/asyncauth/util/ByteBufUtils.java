@@ -25,7 +25,7 @@ public class ByteBufUtils {
         return new String(data, StandardCharsets.UTF_8);
     }
 
-    public static void writeObject(FriendlyByteBuf byteBuf,Object obj) throws Exception {
+    public static void writeObject(FriendlyByteBuf byteBuf,Object obj) {
         byte[] bytes = null;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream  =null;
