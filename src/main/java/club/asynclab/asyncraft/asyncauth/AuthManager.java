@@ -44,7 +44,7 @@ public class AuthManager {
         boolean result = checkPassword(player,password);
         if (result) {
             markVerified(player);
-            AsyncAuth.LOGGER.info("{} Logged in", player.getName());
+            AsyncAuth.LOGGER.info("{} Logged in", player.getName().getString());
         }
         return result;
     }
@@ -81,7 +81,7 @@ public class AuthManager {
         boolean result = DatabaseManager.register(player,password);
         if (result) {
             markVerified(player);
-            AsyncAuth.LOGGER.info("{} Registered and logged in", player.getName());
+            AsyncAuth.LOGGER.info("{} Registered and logged in", player.getName().getString());
         }
         return result;
     }
