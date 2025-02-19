@@ -1,6 +1,7 @@
 package club.asynclab.asyncraft.asyncauth;
 
 import club.asynclab.asyncraft.asyncauth.command.AdminCommands;
+import club.asynclab.asyncraft.asyncauth.command.CommonCommands;
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -59,6 +60,8 @@ public class AsyncAuth {
 
         LiteralArgumentBuilder<CommandSourceStack> main = Commands.literal("asyncauth")
                 .then(AdminCommands.adminCommand());
+
+        CommonCommands.registerCommands(main);
 
         dispatcher.register(
                 Commands.literal("aa").redirect(dispatcher.register(main))

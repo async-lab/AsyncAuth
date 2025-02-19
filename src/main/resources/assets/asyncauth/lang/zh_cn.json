@@ -15,5 +15,6 @@
 
   "msg.asyncauth.old_password_wrong": "旧密码错误",
   "msg.asyncauth.change_password_succeed": "密码已更改",
-  "msg.asyncauth.password_changed_by_admin": "你的密码被管理员修改了"
+  "msg.asyncauth.password_changed_by_admin": "你的密码被管理员修改了",
+  "msg.asyncauth.new_password_too_short": "新密码长度不能低于 %a 个字符"
 }

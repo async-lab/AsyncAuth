@@ -11,7 +11,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkDirection;
 import org.apache.commons.lang3.StringUtils;
 
-public class MessageUtils {
+import java.util.List;
+
+public class ServerMessageUtils {
 
     public static void sendMessage(Player player, String msg) {
         player.sendSystemMessage(ComponentUtils.fromMessage(new LiteralMessage(resolveMessage(msg))));
@@ -21,8 +23,8 @@ public class MessageUtils {
         return Component.translatable(key).getString();
     }
 
-    public static void sendTranslatableMessage(ServerPlayer player, ClientTextConstants textConstants) {
-        NetworkHandler.INSTANCE.sendTo(new ClientMessagePacket(textConstants),player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+    public static void sendTranslatableMessage(ServerPlayer player, ClientTextConstants textConstants, List<String> extendArgs) {
+        NetworkHandler.INSTANCE.sendTo(new ClientMessagePacket(textConstants,extendArgs),player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
     private static String resolveMessage(String msg) {

@@ -10,7 +10,8 @@ public enum ClientTextConstants {
 
     OLD_PASSWORD_WRONG("msg.asyncauth.old_password_wrong"),
     CHANGE_PASSWORD_SUCCEED("msg.asyncauth.change_password_succeed"),
-    PASSWORD_CHANGED_BY_ADMIN("Password was changed by the administrator");
+    PASSWORD_CHANGED_BY_ADMIN("msg.asyncauth.password_changed_by_admin"),
+    Change_Password_Too_Short("msg.asyncauth.new_password_too_short");
 
     final String key;
 
