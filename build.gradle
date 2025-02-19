@@ -198,6 +198,7 @@ shadowJar.finalizedBy('reobfShadowJar')
 shadowJar {
     dependencies {
         include(dependency("com.zaxxer:HikariCP"))
+        include(dependency("com.mysql:mysql-connector-j"))
     }
     mergeServiceFiles()
     archiveFileName = "${mod_name}-${mod_version}-${minecraft_version}.jar"

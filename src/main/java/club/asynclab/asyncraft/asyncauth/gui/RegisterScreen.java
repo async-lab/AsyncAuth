@@ -81,6 +81,12 @@ public class RegisterScreen extends Screen {
             errorMessage = Component.translatable("msg.asyncauth.login_empty_password");
             return;
         }
+
+        if (password.contains(" ")) {
+            errorMessage = Component.translatable("msg.asyncauth.register_password_contain_spaces");
+            return;
+        }
+
         String confirmPassword = confirmPasswordField.getValue();
         if (!confirmPassword.equals(password)) {
             errorMessage = Component.translatable("gui.asyncauth.password_inconsistency");

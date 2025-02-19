@@ -2,6 +2,7 @@
   "msg.asyncauth.login_success": "Login successful, Welcome to the server",
   "msg.asyncauth.login_wrong_password": "Wrong password, please try again",
   "msg.asyncauth.login_empty_password": "Empty password",
+  "msg.asyncauth.register_password_contain_spaces": "The password must not contain Spaces",
   "msg.asyncauth.register_failed": "Fail to register",
   "gui.asyncauth.title_login": "Please Login",
   "gui.asyncauth.title_register": "You don't have an account yet, please register one",
@@ -16,5 +17,6 @@
   "msg.asyncauth.old_password_wrong": "Old password wrong",
   "msg.asyncauth.change_password_succeed": "Password changed",
   "msg.asyncauth.password_changed_by_admin": "Password was changed by the administrator",
-  "msg.asyncauth.new_password_too_short": "The password must be at least %a characters long."
+  "msg.asyncauth.new_password_too_short": "The password must be at least %a characters long.",
+  "msg.asyncauth.password_contain_space": "The password must not contain Spaces"
 }

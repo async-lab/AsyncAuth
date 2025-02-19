@@ -2,18 +2,11 @@ package club.asynclab.asyncraft.asyncauth;
 
 import club.asynclab.asyncraft.asyncauth.constant.ClientTextConstants;
 import club.asynclab.asyncraft.asyncauth.util.ServerMessageUtils;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import javax.xml.crypto.Data;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AuthManager {
@@ -63,12 +56,18 @@ public class AuthManager {
     /**
      * 校验密码是否符合规定
      */
-    public static boolean verifyPasswordText(ServerPlayer player,String password) {
+    public static boolean verifyPasswordText(ServerPlayer serverPlayer,String password) {
         int minLength = ModConfig.minLength.get();
+        Optional<ServerPlayer> optionalPlayer = Optional.ofNullable(serverPlayer);
+        if (password.contains(" ")) {
+            optionalPlayer.ifPresent(player ->
+                ServerMessageUtils.sendTranslatableMessage(player,ClientTextConstants.PASSWORD_CONTAINS_SPACE, List.of())
+            );
+        }
         if (password.length() < minLength) {
-            if (player != null) {
-                ServerMessageUtils.sendTranslatableMessage(player, ClientTextConstants.Change_Password_Too_Short, List.of(String.valueOf(minLength)));
-            }
+            optionalPlayer.ifPresent(player ->
+                    ServerMessageUtils.sendTranslatableMessage(player, ClientTextConstants.Change_PASSWORD_Too_Short, List.of(String.valueOf(minLength)))
+            );
             return false;
         }
         return true;
