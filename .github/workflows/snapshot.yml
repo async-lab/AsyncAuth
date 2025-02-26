@@ -1,0 +1,57 @@
+name: snapshot
+
+on:
+  push:
+    branches:
+      - mc*/dev
+  pull_request:
+    branches:
+      - mc*/dev
+
+jobs:
+  publish:
+    concurrency:
+      group: snapshot
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '21'
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}"
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
+
+      - name: Extract Current Minecraft Version
+        run: echo "VERSION=$(grep 'const val MOD_VERSION' buildSrc/src/main/kotlin/club/asynclab/asyncauth/Props.kt | sed -E 's/.*const val MOD_VERSION = "([^"]+)".*/\1/')" >> $GITHUB_ENV
+
+      - name: Update Snapshot Release
+        uses: andelf/nightly-release@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: 'snapshot-${{ env.VERSION }}'
+          name: 'snapshot-${{ env.VERSION }}-$$-${{ github.run_id }}'
+          prerelease: true
+          body: ${{ github.event.head_commit.message }}
+          files: |
+            **/build/libs/*-all.jar
