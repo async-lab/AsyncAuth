@@ -3,10 +3,10 @@ name: snapshot
 on:
   push:
     branches:
-      - mc*/dev
+      - dev
   pull_request:
     branches:
-      - mc*/dev
+      - dev
 
 jobs:
   publish:
