@@ -33,7 +33,7 @@ val minecraftLibraryWithShade: Configuration by configurations.creating
 configurations.minecraftLibrary.get().extendsFrom(minecraftLibraryWithShade)
 shade.extendsFrom(minecraftLibraryWithShade)
 
-version = "$minecraftVersion-${Props.MOD_VERSION}"
+version = "forge-$minecraftVersion-${Props.MOD_VERSION}"
 group = Props.MOD_GROUP_ID
 base.archivesName.set(Props.MOD_ID)
 kotlin.jvmToolchain(17)
