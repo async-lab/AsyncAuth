@@ -1,0 +1,16 @@
+{
+  "msg.asyncauth.status.success": "登录成功，欢迎来到服务器",
+  "msg.asyncauth.status.wrong_password": "密码错误，请重试",
+  "msg.asyncauth.status.too_short": "密码长度不能低于 %min% 个字符",
+  "msg.asyncauth.status.unknown": "未知错误，请重试",
+  "msg.asyncauth.unauthorized": "未登录",
+  "gui.asyncauth.title_login": "请登录，忘记密码请联系管理员",
+  "gui.asyncauth.title_register": "您还没有游戏账户，请注册一个",
+  "gui.asyncauth.password": "密码",
+  "gui.asyncauth.confirm_password": "确认密码",
+  "gui.asyncauth.password_inconsistency": "密码不一致",
+  "gui.asyncauth.password_too_short": "密码长度不能低于 %min% 个字符",
+  "gui.asyncauth.submit_login": "登录",
+  "gui.asyncauth.submit_register": "注册",
+  "gui.asyncauth.exit": "退出"
+}
