@@ -44,13 +44,13 @@ jobs:
       - name: Extract Current Minecraft Version
         run: echo "VERSION=$(grep 'const val MOD_VERSION' buildSrc/src/main/kotlin/club/asynclab/asyncauth/Props.kt | sed -E 's/.*const val MOD_VERSION = "([^"]+)".*/\1/')" >> $GITHUB_ENV
 
-      - name: Update Snapshot Release
+      - name: Update Nightly Release
         uses: andelf/nightly-release@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: 'snapshot-${{ env.VERSION }}'
-          name: 'snapshot-${{ env.VERSION }}-$$-${{ github.run_id }}'
+          tag_name: 'nightly'
+          name: 'nightly-${{ env.VERSION }}-$$-${{ github.run_id }}'
           prerelease: true
           body: ${{ github.event.head_commit.message }}
           files: |
