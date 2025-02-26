@@ -25,6 +25,7 @@ class EventHandler {
     object ForgeEventServer {
         @SubscribeEvent
         fun onServerAboutToStart(event: ServerAboutToStartEvent) {
+            ModSetting.onServerAboutToStart(event)
             ModContext.Server.onServerAboutToStart(event)
         }
 
@@ -50,12 +51,7 @@ class EventHandler {
         bus = EventBusSubscriber.Bus.MOD,
         value = [Dist.DEDICATED_SERVER]
     )
-    object ModEventServer {
-        @SubscribeEvent
-        fun onCommonSetup(event: FMLCommonSetupEvent) {
-            ModSetting.onCommonSetup(event)
-        }
-    }
+    object ModEventServer {}
 
     @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = [Dist.CLIENT])
     object ModEventClient {}
