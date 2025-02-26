@@ -4,9 +4,9 @@ import club.asynclab.asyncraft.asyncauth.built.BuiltConstantsCommon
 import net.minecraft.server.network.ServerLoginPacketListenerImpl
 import net.minecraftforge.common.ForgeConfigSpec
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue
+import net.minecraftforge.event.server.ServerAboutToStartEvent
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.config.ModConfig
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 
 object ModSetting {
     private val SPEC: ForgeConfigSpec
@@ -49,7 +49,7 @@ object ModSetting {
             .registerConfig(ModConfig.Type.SERVER, SPEC, "${BuiltConstantsCommon.MOD_ID}-server.toml")
     }
 
-    fun onCommonSetup(event: FMLCommonSetupEvent) {
+    fun onServerAboutToStart(event: ServerAboutToStartEvent) {
         ServerLoginPacketListenerImpl.MAX_TICKS_BEFORE_LOGIN = timeout.get() * 20
     }
 }

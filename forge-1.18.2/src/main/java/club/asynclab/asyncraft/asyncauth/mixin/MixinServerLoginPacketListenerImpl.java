@@ -24,7 +24,7 @@ public abstract class MixinServerLoginPacketListenerImpl {
 
     @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerLoginPacketListenerImpl;tick:I", opcode = Opcodes.GETFIELD), cancellable = true)
     private void onTick(CallbackInfo ci) {
-        if (this.tick++ == MAX_TICKS_BEFORE_LOGIN) {
+        if (MAX_TICKS_BEFORE_LOGIN != 0 && this.tick++ == MAX_TICKS_BEFORE_LOGIN) {
             this.disconnect(new TranslatableComponent("multiplayer.disconnect.slow_login"));
             ci.cancel();
         }
