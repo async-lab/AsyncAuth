@@ -76,14 +76,17 @@ class ScreenLogin(ctx: Supplier<NetworkEvent.Context>, deadline: Long) : BaseScr
     override fun render(poseStack: PoseStack, mouseX: Int, mouseY: Int, partialTicks: Float) {
         this.renderBackground(poseStack)
         drawCenteredString(poseStack, this.font, this.title, this.width / 2, 20, 0xFFFFFF)
-        drawCenteredString(
-            poseStack,
-            font,
-            TranslatableComponent("gui.asyncauth.timeout").string.format((this.deadline - Instant.now().epochSecond).toInt()),
-            width / 2,
-            loginButton.y - 10,
-            0xFF0000
-        )
+        val timeout = this.deadline - Instant.now().epochSecond
+        if (timeout > 0) {
+            drawCenteredString(
+                poseStack,
+                font,
+                TranslatableComponent("gui.asyncauth.timeout").string.format(timeout),
+                width / 2,
+                loginButton.y - 10,
+                0xFF0000
+            )
+        }
         super.render(poseStack, mouseX, mouseY, partialTicks)
     }
 
