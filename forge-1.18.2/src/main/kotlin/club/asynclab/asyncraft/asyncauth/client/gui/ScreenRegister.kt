@@ -20,8 +20,10 @@ import java.time.Instant
 import java.util.function.Supplier
 
 @OnlyIn(Dist.CLIENT)
-class ScreenRegister(ctx: Supplier<NetworkEvent.Context>, deadline: Long) :
-    BaseScreenOnConnecting(TITLE, ctx, deadline) {
+class ScreenRegister(
+    ctx: Supplier<NetworkEvent.Context>,
+    deadline: Long,
+) : BaseScreenOnConnecting(TITLE, ctx, deadline) {
     private lateinit var passwordEditBox: EditBox
     private lateinit var confirmEditBox: EditBox
     private lateinit var registerButton: Button

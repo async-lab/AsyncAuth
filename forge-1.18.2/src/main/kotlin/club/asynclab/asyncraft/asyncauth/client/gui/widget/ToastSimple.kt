@@ -10,7 +10,6 @@ import net.minecraft.network.chat.Component
 class ToastSimple(
     private val content: Component,
 ) : Toast {
-
     override fun render(
         poseStack: PoseStack,
         toastComponent: ToastComponent,
