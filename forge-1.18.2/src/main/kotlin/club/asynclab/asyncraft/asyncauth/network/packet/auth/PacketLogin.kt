@@ -26,10 +26,8 @@ class PacketLogin(
         fun handle(packet: PacketLogin, ctx: Supplier<NetworkEvent.Context>) {
             ctx.get().enqueueWork {
                 val status = ModContext.Server.MANAGER_AUTH.auth(packet.username, packet.password)
-
                 ctx.get().attr(Attributes.LOGGED).set(status == AuthStatus.SUCCESS)
-
-                NetworkHandler.LOGIN.reply(PacketLoginResponse(status), ctx.get())
+                NetworkHandler.LOGIN.reply(PacketResponse(status, status == AuthStatus.SUCCESS), ctx.get())
             }
 
             ctx.get().packetHandled = true

@@ -26,7 +26,7 @@ class EventHandler {
         @SubscribeEvent
         fun onServerAboutToStart(event: ServerAboutToStartEvent) {
             ModSetting.onServerAboutToStart(event)
-            ModContext.Server.onServerAboutToStart(event)
+            ModContext.onServerAboutToStart(event)
         }
 
         @SubscribeEvent

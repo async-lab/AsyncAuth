@@ -1,7 +1,7 @@
 package club.asynclab.asyncraft.asyncauth.client.gui
 
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
-import club.asynclab.asyncraft.asyncauth.network.packet.heart.PacketPing
+import club.asynclab.asyncraft.asyncauth.network.packet.misc.PacketHeart
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraftforge.network.NetworkEvent
@@ -21,7 +21,7 @@ open class BaseScreenOnConnecting(
         }
 
         if (heart++ > 200) {
-            ctx.get().enqueueWork { NetworkHandler.LOGIN.reply(PacketPing(), ctx.get()) }
+            ctx.get().enqueueWork { NetworkHandler.LOGIN.reply(PacketHeart(), ctx.get()) }
             heart = 0
         }
     }

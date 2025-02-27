@@ -10,19 +10,20 @@ object ModContext {
     @OnlyIn(Dist.DEDICATED_SERVER)
     object Server {
         lateinit var MANAGER_AUTH: ManagerAuth
+    }
 
-        fun onServerAboutToStart(event: ServerAboutToStartEvent) {
-            this.MANAGER_AUTH = ManagerAuth(
-                ManagerDb(
-                    ModSetting.address.get(),
-                    ModSetting.port.get(),
-                    ModSetting.database.get(),
-                    ModSetting.table.get(),
-                    ModSetting.useSSL.get(),
-                    ModSetting.username.get(),
-                    ModSetting.password.get()
-                )
-            )
-        }
+    fun onServerAboutToStart(event: ServerAboutToStartEvent) {
+        Server.MANAGER_AUTH = ManagerAuth(
+            ManagerDb(
+                ModSetting.address.get(),
+                ModSetting.port.get(),
+                ModSetting.database.get(),
+                ModSetting.table.get(),
+                ModSetting.useSSL.get(),
+                ModSetting.username.get(),
+                ModSetting.password.get()
+            ),
+            ModSetting.minLength.get()
+        )
     }
 }
