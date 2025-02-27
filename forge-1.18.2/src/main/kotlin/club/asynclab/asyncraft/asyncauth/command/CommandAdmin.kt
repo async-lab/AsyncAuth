@@ -1,5 +1,6 @@
 package club.asynclab.asyncraft.asyncauth.command
 
+import club.asynclab.asyncraft.asyncauth.common.enumeration.AuthStatus
 import club.asynclab.asyncraft.asyncauth.common.enumeration.CommandStatus
 import club.asynclab.asyncraft.asyncauth.common.enumeration.PermissionLevel
 import club.asynclab.asyncraft.asyncauth.misc.ModContext
@@ -36,11 +37,11 @@ object CommandAdmin {
             return 1
         }
 
-        val result = ModContext.Server.MANAGER_AUTH.changePassword(player.name.string, password) ?: false
+        val result = ModContext.Server.MANAGER_AUTH.changePassword(player.name.string, password)
 
-        sender?.sendMessage(TextComponent(if (result) "Succeed" else "Player not registered"), sender.uuid)
+        sender?.sendMessage(TextComponent(result.msgPath()), sender.uuid)
 
-        if (!result) return CommandStatus.SUCCESS.status
+        if (result == AuthStatus.SUCCESS) return CommandStatus.SUCCESS.status
 
         player.sendMessage(TextComponent("Password was changed by the administrator"), player.uuid)
         return CommandStatus.SUCCESS.status

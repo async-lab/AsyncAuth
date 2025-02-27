@@ -1,7 +1,16 @@
 package club.asynclab.asyncraft.asyncauth.network
 
 import club.asynclab.asyncraft.asyncauth.AsyncAuth
-import club.asynclab.asyncraft.asyncauth.network.packet.*
+import club.asynclab.asyncraft.asyncauth.misc.ModSetting
+import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketLogin
+import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketLoginResponse
+import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketRegister
+import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketRegisterResponse
+import club.asynclab.asyncraft.asyncauth.network.packet.heart.PacketPing
+import club.asynclab.asyncraft.asyncauth.network.packet.heart.PacketPong
+import club.asynclab.asyncraft.asyncauth.network.packet.login.BasePacketLogin
+import club.asynclab.asyncraft.asyncauth.network.packet.login.PacketFinish
+import club.asynclab.asyncraft.asyncauth.network.packet.login.PacketInit
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import net.minecraftforge.network.HandshakeHandler
 import net.minecraftforge.network.NetworkRegistry
@@ -26,18 +35,31 @@ object NetworkHandler {
             .decoder(PacketInit::decode)
             .consumer(PacketInit::handle)
             .buildLoginPacketList { local ->
-                if (local) emptyList() else listOf(org.apache.commons.lang3.tuple.Pair.of("init", PacketInit()))
+                if (local)
+                    emptyList()
+                else
+                    listOf(org.apache.commons.lang3.tuple.Pair.of("init", PacketInit(ModSetting.timeout.get())))
             }
             .add()
-        LOGIN.messageBuilder(PacketAuth::class.java, id++)
-            .encoder(PacketAuth::encode)
-            .decoder(PacketAuth::decode)
-            .consumer(PacketAuth::handle)
+        LOGIN.messageBuilder(PacketLogin::class.java, id++)
+            .encoder(PacketLogin::encode)
+            .decoder(PacketLogin::decode)
+            .consumer(PacketLogin::handle)
             .add()
-        LOGIN.messageBuilder(PacketResponse::class.java, id++)
-            .encoder(PacketResponse::encode)
-            .decoder(PacketResponse::decode)
-            .consumer(PacketResponse::handle)
+        LOGIN.messageBuilder(PacketLoginResponse::class.java, id++)
+            .encoder(PacketLoginResponse::encode)
+            .decoder(PacketLoginResponse::decode)
+            .consumer(PacketLoginResponse::handle)
+            .add()
+        LOGIN.messageBuilder(PacketRegister::class.java, id++)
+            .encoder(PacketRegister::encode)
+            .decoder(PacketRegister::decode)
+            .consumer(PacketRegister::handle)
+            .add()
+        LOGIN.messageBuilder(PacketRegisterResponse::class.java, id++)
+            .encoder(PacketRegisterResponse::encode)
+            .decoder(PacketRegisterResponse::decode)
+            .consumer(PacketRegisterResponse::handle)
             .add()
         LOGIN.messageBuilder(PacketPing::class.java, id++)
             .encoder(PacketPing::encode)

@@ -1,4 +1,4 @@
-package club.asynclab.asyncraft.asyncauth.network.packet
+package club.asynclab.asyncraft.asyncauth.network.packet.login
 
 import club.asynclab.asyncraft.asyncauth.common.network.Attributes
 import net.minecraft.network.FriendlyByteBuf
