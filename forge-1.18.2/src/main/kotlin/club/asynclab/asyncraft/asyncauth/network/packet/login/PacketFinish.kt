@@ -16,6 +16,7 @@ class PacketFinish : BasePacketLogin() {
                     ctx.get().networkManager.disconnect(TranslatableComponent("msg.asyncauth.unauthorized"))
                 }
             }
+
             ctx.get().packetHandled = true
         }
     }

@@ -22,6 +22,7 @@ class PacketRegister(
                 val status = ModContext.Server.MANAGER_AUTH.register(packet.username, packet.password)
                 NetworkHandler.LOGIN.reply(PacketResponse(status, false), ctx.get())
             }
+
             ctx.get().packetHandled = true
         }
     }

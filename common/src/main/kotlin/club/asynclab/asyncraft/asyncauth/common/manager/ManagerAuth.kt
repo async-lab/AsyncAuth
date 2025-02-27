@@ -13,7 +13,7 @@ open class ManagerAuth(
         }
     }
 
-    fun auth(username: String, password: String): AuthStatus {
+    fun login(username: String, password: String): AuthStatus {
         return executeWithExceptionHandling {
             val success = managerDb.checkPassword(username, password)
             if (success == null) AuthStatus.NOT_EXISTS

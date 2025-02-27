@@ -25,10 +25,11 @@ class PacketLogin(
         fun decode(byteBuf: FriendlyByteBuf) = PacketLogin(byteBuf.readUtf(), byteBuf.readUtf())
         fun handle(packet: PacketLogin, ctx: Supplier<NetworkEvent.Context>) {
             ctx.get().enqueueWork {
-                val status = ModContext.Server.MANAGER_AUTH.auth(packet.username, packet.password)
+                val status = ModContext.Server.MANAGER_AUTH.login(packet.username, packet.password)
                 ctx.get().attr(NettyAttrKeys.AUTHENTICATED).set(status == AuthStatus.SUCCESS)
                 NetworkHandler.LOGIN.reply(PacketResponse(status, status == AuthStatus.SUCCESS), ctx.get())
             }
+
             ctx.get().packetHandled = true
         }
     }
