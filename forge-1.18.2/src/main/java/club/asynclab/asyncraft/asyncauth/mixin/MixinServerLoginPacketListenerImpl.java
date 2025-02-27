@@ -26,7 +26,7 @@ public abstract class MixinServerLoginPacketListenerImpl {
     private void onTick(CallbackInfo ci) {
         if (MAX_TICKS_BEFORE_LOGIN != 0 && this.tick++ == MAX_TICKS_BEFORE_LOGIN) {
             this.disconnect(new TranslatableComponent("multiplayer.disconnect.slow_login"));
-            ci.cancel();
         }
+        ci.cancel();
     }
 }

@@ -1,8 +1,6 @@
 package club.asynclab.asyncraft.asyncauth.network.packet.auth
 
-import club.asynclab.asyncraft.asyncauth.common.enumeration.AuthStatus
 import club.asynclab.asyncraft.asyncauth.misc.ModContext
-import club.asynclab.asyncraft.asyncauth.misc.ModSetting
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraftforge.network.NetworkEvent
@@ -21,14 +19,9 @@ class PacketRegister(
         fun decode(byteBuf: FriendlyByteBuf) = PacketRegister(byteBuf.readUtf(), byteBuf.readUtf())
         fun handle(packet: PacketRegister, ctx: Supplier<NetworkEvent.Context>) {
             ctx.get().enqueueWork {
-                val status = if (packet.password.length < ModSetting.minLength.get())
-                    AuthStatus.TOO_SHORT
-                else
-                    ModContext.Server.MANAGER_AUTH.register(packet.username, packet.password)
-
-                NetworkHandler.LOGIN.reply(PacketRegisterResponse(status), ctx.get())
+                val status = ModContext.Server.MANAGER_AUTH.register(packet.username, packet.password)
+                NetworkHandler.LOGIN.reply(PacketResponse(status, false), ctx.get())
             }
-
             ctx.get().packetHandled = true
         }
     }

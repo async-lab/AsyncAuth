@@ -5,9 +5,6 @@ import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.network.chat.Component
 
-/**
- * 带标签的输入框
- */
 class EditBoxWithLabel(
     private val font: Font, x: Int, y: Int, width: Int, height: Int, message: Component,
 ) : EditBox(font, x, y + font.lineHeight + 2, width, height, message) {
