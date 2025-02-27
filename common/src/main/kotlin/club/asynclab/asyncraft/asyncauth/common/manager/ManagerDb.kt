@@ -78,12 +78,12 @@ class ManagerDb(
                 stmt.setString(1, username.lowercase())
                 stmt.executeQuery().use(ResultSet::next)
             }
-        } ?: false
+        }
     }
 
-    fun checkPassword(username: String, password: String): Boolean {
-        val rawPassword = getHashedPassword(username) ?: return false
-        return UtilPassword.check(password, rawPassword)
+    fun checkPassword(username: String, password: String): Boolean? {
+        val hashedPassword = this.getHashedPassword(username) ?: return null
+        return UtilPassword.check(password, hashedPassword)
     }
 
     fun register(username: String, password: String): Boolean {
@@ -95,7 +95,7 @@ class ManagerDb(
                 stmt.setString(3, UtilPassword.hashPassword(password))
                 stmt.executeUpdate() > 0
             }
-        } ?: false
+        }
     }
 
     fun changePassword(username: String, password: String): Boolean {
@@ -106,6 +106,6 @@ class ManagerDb(
                 stmt.setString(2, username.lowercase())
                 stmt.executeUpdate() > 0
             }
-        } ?: false
+        }
     }
 }

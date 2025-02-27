@@ -1,4 +1,4 @@
-package club.asynclab.asyncraft.asyncauth.network.packet
+package club.asynclab.asyncraft.asyncauth.network.packet.heart
 
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
 import net.minecraft.network.FriendlyByteBuf

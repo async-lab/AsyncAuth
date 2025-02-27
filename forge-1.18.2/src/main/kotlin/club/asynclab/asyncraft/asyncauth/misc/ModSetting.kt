@@ -35,8 +35,8 @@ object ModSetting {
         password = builder.define("password", "123456")
         builder.pop()
 
-        minLength = builder.comment("密码最小长度").defineInRange("minLength", 6, 6, 50)
-        timeout = builder.comment("连接超时时间").define("timeout", 180)
+        minLength = builder.define("minLength", 6)
+        timeout = builder.define("timeout", 180)
         SPEC = builder.build()
     }
 
