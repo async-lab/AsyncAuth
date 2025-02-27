@@ -5,7 +5,6 @@ import java.sql.SQLException
 import javax.sql.DataSource
 
 object UtilSql {
-
     fun <R> DataSource.execute(action: (Connection) -> R): R {
         this.connection.use {
             try {
