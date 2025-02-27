@@ -7,9 +7,6 @@ import net.minecraftforge.network.NetworkEvent
 import java.time.Instant
 import java.util.function.Supplier
 
-/**
- * 确认用户是否注册，客户端接收
- */
 class PacketInit(
     private val timeout: Int,
 ) : BasePacketLogin() {
