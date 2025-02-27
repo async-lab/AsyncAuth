@@ -28,6 +28,7 @@ class PacketLoginResponse(private val status: AuthStatus) {
 
                 screen.onClose()
                 NetworkHandler.LOGIN.reply(PacketFinish(), ctx.get())
+                UtilToast.toast(TranslatableComponent(AuthStatus.SUCCESS.msgPath()))
             }
 
             ctx.get().packetHandled = true
