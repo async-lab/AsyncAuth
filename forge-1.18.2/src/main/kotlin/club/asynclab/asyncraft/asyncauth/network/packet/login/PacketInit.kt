@@ -20,7 +20,6 @@ class PacketInit(
             ctx.get().enqueueWork {
                 Minecraft.getInstance().pushGuiLayer(ScreenLogin(ctx, Instant.now().epochSecond + packet.timeout))
             }
-
             ctx.get().packetHandled = true
         }
     }

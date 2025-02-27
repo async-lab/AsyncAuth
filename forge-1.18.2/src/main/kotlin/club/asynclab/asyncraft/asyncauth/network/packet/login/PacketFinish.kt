@@ -1,6 +1,6 @@
 package club.asynclab.asyncraft.asyncauth.network.packet.login
 
-import club.asynclab.asyncraft.asyncauth.common.network.Attributes
+import club.asynclab.asyncraft.asyncauth.common.network.NettyAttrKeys
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.chat.TranslatableComponent
 import net.minecraftforge.network.NetworkEvent
@@ -12,7 +12,7 @@ class PacketFinish : BasePacketLogin() {
         fun decode(byteBuf: FriendlyByteBuf) = PacketFinish()
         fun handle(packet: PacketFinish, ctx: Supplier<NetworkEvent.Context>) {
             ctx.get().enqueueWork {
-                if (!ctx.get().attr(Attributes.LOGGED).get()) {
+                if (ctx.get().attr(NettyAttrKeys.AUTHENTICATED).get() != true) {
                     ctx.get().networkManager.disconnect(TranslatableComponent("msg.asyncauth.unauthorized"))
                 }
             }
