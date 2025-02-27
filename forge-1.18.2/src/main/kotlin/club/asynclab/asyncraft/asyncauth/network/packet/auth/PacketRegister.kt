@@ -12,7 +12,6 @@ class PacketRegister(
     private val username: String,
     private val password: String,
 ) {
-
     companion object {
         fun encode(packet: PacketRegister, byteBuf: FriendlyByteBuf) {
             byteBuf.writeUtf(packet.username)

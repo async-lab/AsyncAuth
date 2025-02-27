@@ -7,7 +7,6 @@ import net.minecraftforge.api.distmarker.OnlyIn
 import net.minecraftforge.event.server.ServerAboutToStartEvent
 
 object ModContext {
-
     @OnlyIn(Dist.DEDICATED_SERVER)
     object Server {
         lateinit var MANAGER_AUTH: ManagerAuth
