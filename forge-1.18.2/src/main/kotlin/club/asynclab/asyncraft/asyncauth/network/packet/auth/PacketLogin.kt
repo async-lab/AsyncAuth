@@ -1,7 +1,7 @@
 package club.asynclab.asyncraft.asyncauth.network.packet.auth
 
 import club.asynclab.asyncraft.asyncauth.common.enumeration.AuthStatus
-import club.asynclab.asyncraft.asyncauth.common.network.Attributes
+import club.asynclab.asyncraft.asyncauth.common.network.NettyAttrKeys
 import club.asynclab.asyncraft.asyncauth.misc.ModContext
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
 import net.minecraft.network.FriendlyByteBuf
@@ -26,10 +26,9 @@ class PacketLogin(
         fun handle(packet: PacketLogin, ctx: Supplier<NetworkEvent.Context>) {
             ctx.get().enqueueWork {
                 val status = ModContext.Server.MANAGER_AUTH.auth(packet.username, packet.password)
-                ctx.get().attr(Attributes.LOGGED).set(status == AuthStatus.SUCCESS)
+                ctx.get().attr(NettyAttrKeys.AUTHENTICATED).set(status == AuthStatus.SUCCESS)
                 NetworkHandler.LOGIN.reply(PacketResponse(status, status == AuthStatus.SUCCESS), ctx.get())
             }
-
             ctx.get().packetHandled = true
         }
     }
