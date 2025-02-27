@@ -55,8 +55,10 @@ class ScreenRegister(ctx: Supplier<NetworkEvent.Context>, deadline: Long) :
         ) {
             if (this.passwordEditBox.value.isEmpty()) {
                 UtilToast.toast(TranslatableComponent(AuthStatus.EMPTY.msgPath()))
+                return@Button
             } else if (this.confirmEditBox.value != this.passwordEditBox.value) {
                 UtilToast.toast(TranslatableComponent("gui.asyncauth.password_inconsistency"))
+                return@Button
             }
             NetworkHandler.LOGIN.reply(
                 PacketRegister(Minecraft.getInstance().user.name, this.passwordEditBox.value),
