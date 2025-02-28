@@ -1,6 +1,6 @@
 package club.asynclab.asyncraft.asyncauth.client.gui
 
-import club.asynclab.asyncraft.asyncauth.common.enumeration.AuthStatus
+import club.asynclab.asyncraft.asyncauth.common.misc.Lang
 import club.asynclab.asyncraft.asyncauth.gui.ScreenRegister
 import club.asynclab.asyncraft.asyncauth.gui.widget.EditBoxWithLabel
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
@@ -31,22 +31,31 @@ class ScreenLogin(ctx: Supplier<NetworkEvent.Context>, deadline: Long) : BaseScr
         super.init()
         val centerX = this.width / 2
 
-        this.passwordEditBox = EditBoxWithLabel(
+        this.passwordEditBox = object : EditBoxWithLabel(
             this.font,
             centerX - 100, 100,
             200, 20,
-            TranslatableComponent("gui.asyncauth.password")
-        ).apply {
+            TranslatableComponent(Lang.Gui.PASSWORD)
+        ) {
+            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                when (keyCode) {
+                    GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> this@ScreenLogin.loginButton.onPress()
+                    else -> return super.keyPressed(keyCode, scanCode, modifiers)
+                }
+
+                return true
+            }
+        }.apply {
             setFormatter { text: String, _: Int -> TextComponent("*".repeat(text.length)).visualOrderText }
         }
 
         this.loginButton = Button(
             centerX - 100, 150,
             100, 20,
-            TranslatableComponent("gui.asyncauth.login")
+            TranslatableComponent(Lang.Gui.LOGIN)
         ) {
             if (this.passwordEditBox.value.isEmpty()) {
-                UtilToast.toast(TranslatableComponent(AuthStatus.EMPTY.msgPath()))
+                UtilToast.toast(TranslatableComponent(Lang.Auth.EMPTY))
                 return@Button
             }
             NetworkHandler.LOGIN.reply(
@@ -58,14 +67,16 @@ class ScreenLogin(ctx: Supplier<NetworkEvent.Context>, deadline: Long) : BaseScr
         this.registerButton = Button(
             centerX, 150,
             100, 20,
-            TranslatableComponent("gui.asyncauth.register")
+            TranslatableComponent(Lang.Gui.REGISTER)
         ) { Minecraft.getInstance().pushGuiLayer(ScreenRegister(ctx, this.deadline)) }
 
         this.exitButton = Button(
             20, this.height - 40,
             100, 20,
-            TranslatableComponent("gui.asyncauth.exit")
+            TranslatableComponent(Lang.Gui.EXIT)
         ) { this.ctx.get().networkManager.disconnect() }
+
+        this.setInitialFocus(this.passwordEditBox)
 
         this.addRenderableWidget(this.passwordEditBox)
         this.addRenderableWidget(this.loginButton)
@@ -81,7 +92,7 @@ class ScreenLogin(ctx: Supplier<NetworkEvent.Context>, deadline: Long) : BaseScr
             drawCenteredString(
                 poseStack,
                 font,
-                TranslatableComponent("gui.asyncauth.timeout").string.format(timeout),
+                TranslatableComponent(Lang.Gui.TIMEOUT).string.format(timeout),
                 width / 2,
                 loginButton.y - 10,
                 0xFF0000
@@ -93,7 +104,6 @@ class ScreenLogin(ctx: Supplier<NetworkEvent.Context>, deadline: Long) : BaseScr
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         when (keyCode) {
             GLFW.GLFW_KEY_ESCAPE -> ctx.get().networkManager.disconnect()
-            GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> this.loginButton.onPress()
             else -> return super.keyPressed(keyCode, scanCode, modifiers)
         }
 
@@ -101,6 +111,6 @@ class ScreenLogin(ctx: Supplier<NetworkEvent.Context>, deadline: Long) : BaseScr
     }
 
     companion object {
-        private val TITLE = TranslatableComponent("gui.asyncauth.login")
+        private val TITLE = TranslatableComponent(Lang.Gui.LOGIN)
     }
 }

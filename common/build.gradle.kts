@@ -15,7 +15,6 @@ base.archivesName.set("${Props.MOD_ID}-common")
 kotlin.jvmToolchain(8)
 
 dependencies {
-//    val jable = "com.github.dsx137:jable:${jableVersion}"
     val slf4jApi = "org.slf4j:slf4j-api:2.0.7"
     val netty = "io.netty:netty-all:4.1.117.Final"
 
@@ -51,4 +50,23 @@ val generateTemplates by tasks.registering(Copy::class) {
 rootProject.idea.project.settings.taskTriggers.afterSync(generateTemplates)
 project.eclipse.synchronizationTasks(generateTemplates)
 
+val generateLang by tasks.registering(JavaExec::class) {
+    classpath = sourceSets["main"].compileClasspath + sourceSets["main"].runtimeClasspath
+    mainClass = "${Props.MOD_GROUP_ID}.${Props.MOD_ID}.common.misc.Lang"
+    workingDir = file("src/generated/resources/assets/${Props.MOD_ID}/lang")
+    doFirst {
+        if (!workingDir.exists()) {
+            workingDir.deleteRecursively()
+            workingDir.mkdirs()
+        }
+    }
+}
+
+val processResourcesAgain by tasks.registering(ProcessResources::class) {
+    dependsOn(generateLang)
+}
+
+tasks.jar.get().dependsOn(generateLang)
+
+sourceSets["main"].resources.srcDirs("src/generated/resources")
 sourceSets["main"].java.srcDirs(generateTemplates.map { it.destinationDir })

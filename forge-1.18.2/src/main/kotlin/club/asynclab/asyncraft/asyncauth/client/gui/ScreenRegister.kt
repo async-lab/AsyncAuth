@@ -1,7 +1,7 @@
 package club.asynclab.asyncraft.asyncauth.gui
 
 import club.asynclab.asyncraft.asyncauth.client.gui.BaseScreenOnConnecting
-import club.asynclab.asyncraft.asyncauth.common.enumeration.AuthStatus
+import club.asynclab.asyncraft.asyncauth.common.misc.Lang
 import club.asynclab.asyncraft.asyncauth.gui.widget.EditBoxWithLabel
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
 import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketRegister
@@ -27,39 +27,59 @@ class ScreenRegister(
     private lateinit var passwordEditBox: EditBox
     private lateinit var confirmEditBox: EditBox
     private lateinit var registerButton: Button
-    private lateinit var backButton: Button
+    private lateinit var exitButton: Button
 
     override fun init() {
         super.init()
         val centerX = this.width / 2
 
-        this.passwordEditBox = EditBoxWithLabel(
+        this.passwordEditBox = object : EditBoxWithLabel(
             this.font,
             centerX - 100,  // x坐标
             80,  // y坐标
             200, 20,  // 宽度/高度
-            TranslatableComponent("gui.asyncauth.password"),
-        ).apply { setFormatter { text: String, _: Int? -> TextComponent("*".repeat(text.length)).visualOrderText } }
+            TranslatableComponent(Lang.Gui.PASSWORD),
+        ) {
+            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                when (keyCode) {
+                    GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> this@ScreenRegister.registerButton.onPress()
+                    else -> return super.keyPressed(keyCode, scanCode, modifiers)
+                }
 
-        this.confirmEditBox = EditBoxWithLabel(
+                return true
+            }
+        }.apply {
+            setFormatter { text: String, _: Int? -> TextComponent("*".repeat(text.length)).visualOrderText }
+        }
+
+        this.confirmEditBox = object : EditBoxWithLabel(
             this.font,
             centerX - 100,
             120,
             200, 20,
-            TranslatableComponent("gui.asyncauth.confirm_password"),
-        ).apply { setFormatter { text: String, _: Int? -> TextComponent("*".repeat(text.length)).visualOrderText } }
+            TranslatableComponent(Lang.Gui.CONFIRM_PASSWORD),
+        ) {
+            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                when (keyCode) {
+                    GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> this@ScreenRegister.registerButton.onPress()
+                    else -> return super.keyPressed(keyCode, scanCode, modifiers)
+                }
+
+                return true
+            }
+        }.apply { setFormatter { text: String, _: Int? -> TextComponent("*".repeat(text.length)).visualOrderText } }
 
         this.registerButton = Button(
             centerX - 50,  // x坐标
             170,  // y坐标
             100, 20,  // 宽度/高度
-            TranslatableComponent("gui.asyncauth.register")
+            TranslatableComponent(Lang.Gui.REGISTER)
         ) {
             if (this.passwordEditBox.value.isEmpty()) {
-                UtilToast.toast(TranslatableComponent(AuthStatus.EMPTY.msgPath()))
+                UtilToast.toast(TranslatableComponent(Lang.Auth.EMPTY))
                 return@Button
             } else if (this.confirmEditBox.value != this.passwordEditBox.value) {
-                UtilToast.toast(TranslatableComponent("gui.asyncauth.password_inconsistency"))
+                UtilToast.toast(TranslatableComponent(Lang.Msg.PASSWORD_NOT_MATCH))
                 return@Button
             }
             NetworkHandler.LOGIN.reply(
@@ -68,17 +88,19 @@ class ScreenRegister(
             )
         }
 
-        this.backButton = Button(
+        this.exitButton = Button(
             20,
             this.height - 40,
             100, 20,
-            TranslatableComponent("gui.asyncauth.exit")
+            TranslatableComponent(Lang.Gui.EXIT)
         ) { this.onClose() }
+
+        this.setInitialFocus(this.passwordEditBox)
 
         this.addRenderableWidget(this.passwordEditBox)
         this.addRenderableWidget(this.confirmEditBox)
         this.addRenderableWidget(this.registerButton)
-        this.addRenderableWidget(this.backButton)
+        this.addRenderableWidget(this.exitButton)
     }
 
     override fun render(poseStack: PoseStack, mouseX: Int, mouseY: Int, partialTicks: Float) {
@@ -89,7 +111,7 @@ class ScreenRegister(
             drawCenteredString(
                 poseStack,
                 font,
-                TranslatableComponent("gui.asyncauth.timeout").string.format(timeout),
+                TranslatableComponent(Lang.Gui.TIMEOUT).string.format(timeout),
                 width / 2,
                 registerButton.y - 10,
                 0xFF0000
@@ -102,7 +124,6 @@ class ScreenRegister(
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         when (keyCode) {
             GLFW.GLFW_KEY_ESCAPE -> this.onClose()
-            GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> this.registerButton.onPress()
             else -> return super.keyPressed(keyCode, scanCode, modifiers)
         }
 
@@ -110,6 +131,6 @@ class ScreenRegister(
     }
 
     companion object {
-        private val TITLE = TranslatableComponent("gui.asyncauth.register")
+        private val TITLE = TranslatableComponent(Lang.Gui.REGISTER)
     }
 }

@@ -1,6 +1,7 @@
 package club.asynclab.asyncraft.asyncauth.network.packet.auth
 
 import club.asynclab.asyncraft.asyncauth.common.enumeration.AuthStatus
+import club.asynclab.asyncraft.asyncauth.common.misc.Lang
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
 import club.asynclab.asyncraft.asyncauth.network.packet.login.PacketFinish
 import club.asynclab.asyncraft.asyncauth.util.UtilToast
@@ -22,11 +23,11 @@ class PacketResponse(private val status: AuthStatus, private val finish: Boolean
 
         fun handle(packet: PacketResponse, ctx: Supplier<NetworkEvent.Context>) {
             ctx.get().enqueueWork {
-                UtilToast.toast(TranslatableComponent(packet.status.msgPath()))
+                UtilToast.toast(TranslatableComponent(Lang.Auth.from(packet.status)))
                 if (packet.status == AuthStatus.SUCCESS) Minecraft.getInstance().screen?.onClose()
                 if (packet.finish) NetworkHandler.LOGIN.reply(PacketFinish(), ctx.get())
             }
-            
+
             ctx.get().packetHandled = true
         }
     }

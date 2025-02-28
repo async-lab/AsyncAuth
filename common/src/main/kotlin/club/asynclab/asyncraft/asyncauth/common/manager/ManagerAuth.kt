@@ -3,7 +3,7 @@ package club.asynclab.asyncraft.asyncauth.common.manager
 import club.asynclab.asyncraft.asyncauth.common.Common
 import club.asynclab.asyncraft.asyncauth.common.enumeration.AuthStatus
 
-open class ManagerAuth(
+class ManagerAuth(
     private val managerDb: ManagerDb,
     private val minLength: Int,
 ) {
@@ -24,8 +24,8 @@ open class ManagerAuth(
     fun register(username: String, password: String): AuthStatus {
         return executeWithExceptionHandling {
             if (username.isEmpty() || password.isEmpty()) AuthStatus.EMPTY
-            if (password.length < minLength) AuthStatus.TOO_SHORT
-            if (this.managerDb.register(username, password)) AuthStatus.SUCCESS else AuthStatus.EXISTS
+            else if (password.length < minLength) AuthStatus.TOO_SHORT
+            else if (this.managerDb.register(username, password)) AuthStatus.SUCCESS else AuthStatus.EXISTS
         }
     }
 
