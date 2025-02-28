@@ -51,14 +51,15 @@ rootProject.idea.project.settings.taskTriggers.afterSync(generateTemplates)
 project.eclipse.synchronizationTasks(generateTemplates)
 
 val generateLang by tasks.registering(JavaExec::class) {
+    workingDir = file("src/generated/resources/assets/${Props.MOD_ID}/lang")
+    inputs.files(sourceSets["main"].allJava)
+    outputs.dir(workingDir)
+
     classpath = sourceSets["main"].compileClasspath + sourceSets["main"].runtimeClasspath
     mainClass = "${Props.MOD_GROUP_ID}.${Props.MOD_ID}.common.misc.Lang"
-    workingDir = file("src/generated/resources/assets/${Props.MOD_ID}/lang")
     doFirst {
-        if (!workingDir.exists()) {
-            workingDir.deleteRecursively()
-            workingDir.mkdirs()
-        }
+        workingDir.deleteRecursively()
+        workingDir.mkdirs()
     }
 }
 
