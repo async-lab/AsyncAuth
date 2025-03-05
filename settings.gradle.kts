@@ -17,4 +17,3 @@ fileTree(rootProject.projectDir)
     .files.map { it.parentFile.name }
     .filter { it != "buildSrc" }
     .forEach { include(it) }
-include("forge-1.19.2")
