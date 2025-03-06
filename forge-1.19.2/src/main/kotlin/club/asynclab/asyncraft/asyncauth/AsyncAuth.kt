@@ -14,7 +14,7 @@ object AsyncAuth {
     val LOGGER: Logger = LoggerFactory.getLogger(AsyncAuth::class.java)
 
     fun resourceLocation(path: String): ResourceLocation =
-        ResourceLocation.fromNamespaceAndPath(BuiltConstantsCommon.MOD_ID, path)
+        ResourceLocation(BuiltConstantsCommon.MOD_ID, path)
 
     fun pkg(path: String) = "${BuiltConstantsCommon.MOD_GROUP_ID}.${BuiltConstantsCommon.MOD_ID}.$path"
 

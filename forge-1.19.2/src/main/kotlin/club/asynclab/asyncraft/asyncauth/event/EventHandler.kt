@@ -9,17 +9,17 @@ import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.event.server.ServerAboutToStartEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber
+import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 
 
 class EventHandler {
-    @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
+    @Mod.EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
     object ForgeEventBoth {}
 
-    @EventBusSubscriber(
+    @Mod.EventBusSubscriber(
         modid = BuiltConstantsCommon.MOD_ID,
-        bus = EventBusSubscriber.Bus.FORGE,
+        bus = Mod.EventBusSubscriber.Bus.FORGE,
         value = [Dist.DEDICATED_SERVER]
     )
     object ForgeEventServer {
@@ -35,10 +35,10 @@ class EventHandler {
         }
     }
 
-    @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = EventBusSubscriber.Bus.FORGE, value = [Dist.CLIENT])
+    @Mod.EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = [Dist.CLIENT])
     object ForgeEventClient {}
 
-    @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     object ModEventBoth {
         @SubscribeEvent
         fun onCommonSetup(event: FMLCommonSetupEvent) {
@@ -46,13 +46,13 @@ class EventHandler {
         }
     }
 
-    @EventBusSubscriber(
+    @Mod.EventBusSubscriber(
         modid = BuiltConstantsCommon.MOD_ID,
-        bus = EventBusSubscriber.Bus.MOD,
+        bus = Mod.EventBusSubscriber.Bus.MOD,
         value = [Dist.DEDICATED_SERVER]
     )
     object ModEventServer {}
 
-    @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = [Dist.CLIENT])
+    @Mod.EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = [Dist.CLIENT])
     object ModEventClient {}
 }

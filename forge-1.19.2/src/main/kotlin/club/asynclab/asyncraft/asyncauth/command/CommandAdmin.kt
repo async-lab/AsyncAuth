@@ -14,7 +14,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.arguments.EntityArgument
-import net.minecraft.network.chat.Component
+
 
 object CommandAdmin {
     fun getBuilder(): LiteralArgumentBuilder<CommandSourceStack> {
@@ -34,7 +34,7 @@ object CommandAdmin {
         val minLength = ModSetting.minLength.get()
 
         if (password.length < minLength) {
-            ctx.source.sendFailure(Component.translatable(Lang.Auth.TOO_SHORT))
+            ctx.source.sendFailure(UtilComponent.getTranslatableComponent(Lang.Auth.TOO_SHORT))
             return 1
         }
 
