@@ -5,7 +5,7 @@ import club.asynclab.asyncraft.asyncauth.common.util.UtilResource.useIfResourceE
 
 object Utils {
     fun asciiArt() {
-        "/ascii-art.txt".useIfResourceExist { reader ->
+        "/ascii_art.txt".useIfResourceExist { reader ->
             reader.lines().forEach { line -> AsyncAuth.LOGGER.info(line) }
         }
     }
