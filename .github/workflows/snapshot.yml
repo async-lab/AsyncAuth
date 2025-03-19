@@ -18,21 +18,20 @@ jobs:
     steps:
       - uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
-          java-version: '21'
+          distribution: adopt
+          java-version: 21
 
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Cache Gradle packages
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}"
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
 
       - name: Build
         env:
@@ -42,16 +41,16 @@ jobs:
           ./gradlew build
 
       - name: Extract Current Minecraft Version
-        run: echo "VERSION=$(grep 'const val MOD_VERSION' buildSrc/src/main/kotlin/club/asynclab/asyncauth/Props.kt | sed -E 's/.*const val MOD_VERSION = "([^"]+)".*/\1/')" >> $GITHUB_ENV
+        id: get_version
+        run: echo "version=$(grep 'const val MOD_VERSION' buildSrc/src/main/kotlin/club/asynclab/asyncauth/Props.kt | sed -E 's/.*const val MOD_VERSION = "([^"]+)".*/\1/')" >> $GITHUB_OUTPUT
 
       - name: Update Nightly Release
         uses: andelf/nightly-release@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: 'nightly'
-          name: 'nightly-${{ env.VERSION }}-$$-${{ github.run_id }}'
+          tag_name: nightly
+          name: nightly-${{ steps.get_version.outputs.version }}-$$-${{ github.run_id }}
           prerelease: true
           body: ${{ github.event.head_commit.message }}
-          files: |
-            **/build/libs/*-all.jar
+          files: "**/build/libs/*-all.jar"
