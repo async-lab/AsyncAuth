@@ -16,13 +16,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-java@v2
+      - name: Set up Java
+        uses: actions/setup-java@v2
         with:
           distribution: adopt
           java-version: 21
 
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Cache Gradle packages
         uses: actions/cache@v4
@@ -44,6 +47,22 @@ jobs:
         id: get_version
         run: echo "version=$(grep 'const val MOD_VERSION' buildSrc/src/main/kotlin/club/asynclab/asyncauth/Props.kt | sed -E 's/.*const val MOD_VERSION = "([^"]+)".*/\1/')" >> $GITHUB_OUTPUT
 
+      - name: Generate Changelog
+        id: get_changelog
+        run: |
+          tag="$(git --no-pager tag --sort=creatordate --merged ${{ github.ref_name }} | grep nightly | tail -1)"
+          limit="-1"
+          if [ -n "$tag" ]; then
+            limit="$tag..HEAD"
+          fi
+          changelog="$(echo -ne "$(git log "$limit" --pretty=format:'- %s')")"
+          changelog="$(echo "$changelog" | sed 's/$/  /')"
+          {
+            echo 'changelog<<EOF'
+            echo "$changelog"
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
+
       - name: Update Nightly Release
         uses: andelf/nightly-release@main
         env:
@@ -52,5 +71,5 @@ jobs:
           tag_name: nightly
           name: nightly-${{ steps.get_version.outputs.version }}-$$-${{ github.run_id }}
           prerelease: true
-          body: ${{ github.event.head_commit.message }}
+          body: ${{ steps.get_changelog.outputs.changelog }}
           files: "**/build/libs/*-all.jar"
