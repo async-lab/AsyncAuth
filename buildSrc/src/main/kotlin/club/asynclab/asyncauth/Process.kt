@@ -32,7 +32,7 @@ object Process {
         )
     }
 
-    fun Project.createGenerateTemplate(props: Map<String, String>) = tasks.register<Copy>("generateTemplates") {
+    fun Project.createGenerateTemplates(props: Map<String, String>) = tasks.register<Copy>("generateTemplates") {
         val src = file(project.projectDir.resolve("src/main/templates/"))
         val dst = layout.buildDirectory.dir("generated/sources/templates/")
         inputs.properties(props)
@@ -40,10 +40,12 @@ object Process {
         from(src)
         into(dst)
         expand(props)
-    }.also {
+    }.also { generateTemplates ->
         val sourceSets = the<SourceSetContainer>()
-        sourceSets["main"].java.srcDirs(listOf("java", "kotlin").map(it.get().destinationDir::resolve))
-        rootProject.the<IdeaModel>().project.settings.taskTriggers.afterSync(it)
-        project.the<EclipseModel>().synchronizationTasks(it)
+        sourceSets["main"].java.srcDirs(generateTemplates.map { it.destinationDir }.map {
+            listOf("java", "kotlin").map(it::resolve)
+        })
+        rootProject.the<IdeaModel>().project.settings.taskTriggers.afterSync(generateTemplates)
+        project.the<EclipseModel>().synchronizationTasks(generateTemplates)
     }
 }

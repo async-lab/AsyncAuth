@@ -1,6 +1,5 @@
 import club.asynclab.asyncauth.Deps
 import club.asynclab.asyncauth.Process.configureGenerally
-import club.asynclab.asyncauth.Process.createGenerateTemplate
 import club.asynclab.asyncauth.Props
 import club.asynclab.asyncauth.api.toMap
 import java.time.ZoneOffset
@@ -121,7 +120,6 @@ tasks.processResources {
     }
 }
 
-val generateTemplates = project.createGenerateTemplate(props)
 sourceSets["main"].resources.srcDirs("src/generated/resources")
 
 tasks.jar {
