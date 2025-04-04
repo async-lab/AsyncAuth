@@ -23,12 +23,12 @@ subprojects {
     plugins.apply("org.jetbrains.kotlin.plugin.lombok")
 
     repositories {
-        maven { url = uri("https://maven.aliyun.com/repository/public/") }
-        maven { url = uri("https://jitpack.io") }
-        maven("Kotlin for Forge") { url = uri("https://thedarkcolour.github.io/KotlinForForge/") }
+        maven("https://maven.aliyun.com/repository/public/")
+        maven("https://jitpack.io")
+        maven("https://thedarkcolour.github.io/KotlinForForge/")
         maven("Jared's maven") { url = uri("https://maven.blamejared.com/") }
         maven("Aquaculture") { url = uri("https://girafi.dk/maven/") }
-        maven("ModMaven") { url = uri("https://modmaven.dev") }
+        maven("https://modmaven.dev")
         maven { url = uri("https://www.cursemaven.com"); content { includeGroup("curse.maven") } }
         mavenLocal()
         mavenCentral()
