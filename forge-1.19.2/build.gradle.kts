@@ -1,9 +1,8 @@
 import club.asynclab.asyncauth.Deps
+import club.asynclab.asyncauth.Process.configureGenerally
+import club.asynclab.asyncauth.Process.createGenerateTemplate
 import club.asynclab.asyncauth.Props
-import club.asynclab.asyncauth.Utils.relocateToShadowed
 import club.asynclab.asyncauth.api.toMap
-import org.jetbrains.gradle.ext.settings
-import org.jetbrains.gradle.ext.taskTriggers
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -85,8 +84,6 @@ mixin {
     config("${Props.MOD_ID}.mixins.json")
 }
 
-tasks.compileJava { outputs.upToDateWhen { false } }
-
 dependencies {
     val mc = "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
     val mx = "org.spongepowered:mixin:0.8.5:processor"
@@ -124,20 +121,7 @@ tasks.processResources {
     }
 }
 
-val generateTemplates by tasks.registering(Copy::class) {
-    val src = file("src/main/templates/java")
-    val dst = layout.buildDirectory.dir("generated/sources/templates/java")
-    inputs.properties(props)
-
-    from(src)
-    into(dst)
-    expand(props)
-}
-
-sourceSets["main"].resources.srcDirs("src/generated/resources")
-sourceSets["main"].java.srcDirs(generateTemplates.map { it.destinationDir })
-rootProject.idea.project.settings.taskTriggers.afterSync(generateTemplates)
-project.eclipse.synchronizationTasks(generateTemplates)
+val generateTemplates = project.createGenerateTemplate(props)
 
 tasks.jar {
     manifest {
@@ -157,21 +141,7 @@ tasks.jar {
     finalizedBy("reobfJar")
 }
 
-tasks.shadowJar {
-    mergeServiceFiles()
-    minimize {
-        fullShade.dependencies.forEach { exclude(dependency(it)) }
-    }
-
-    configurations = listOf(shade)
-
-    relocateToShadowed(
-        "com.zaxxer.hikari",
-        "com.mysql.cj",
-        "com.mysql.jdbc",
-        "google.protobuf",
-        "com.google.protobuf",
-    )
-}
+tasks.compileJava { outputs.upToDateWhen { false } }
+tasks.shadowJar { configureGenerally(shade, fullShade) }
 reobf { create("shadowJar") {} }
 tasks.build { dependsOn("shadowJar") }

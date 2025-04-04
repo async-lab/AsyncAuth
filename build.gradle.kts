@@ -3,11 +3,8 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 
 plugins {
-    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.7"
+    id("org.jetbrains.gradle.plugin.idea-ext")
 
-//    id("com.gradleup.shadow") version "8.3.2" apply false
-//    kotlin("jvm") version "1.9.23" apply false
-//    kotlin("kapt") version "1.9.23" apply false
     kotlin("plugin.serialization") version "1.9.23" apply false
     kotlin("plugin.lombok") version "1.9.23" apply false
 }

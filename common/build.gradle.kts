@@ -1,13 +1,9 @@
 import club.asynclab.asyncauth.Deps
+import club.asynclab.asyncauth.Process.createGenerateTemplate
 import club.asynclab.asyncauth.Props
 import club.asynclab.asyncauth.api.toMap
-import org.jetbrains.gradle.ext.settings
-import org.jetbrains.gradle.ext.taskTriggers
 
 val slf4jVersion: String by project
-
-val delivery: Configuration by configurations.creating
-configurations.api.get().extendsFrom(delivery)
 
 version = Props.MOD_VERSION
 group = Props.MOD_GROUP_ID
@@ -32,23 +28,7 @@ dependencies {
 
 val props = Props.toMap()
 
-val generateTemplates by tasks.registering(Copy::class) {
-    val src = file("src/main/templates/java")
-    val dst = layout.buildDirectory.dir("generated/sources/templates/java")
-    inputs.properties(props)
-
-    doFirst {
-        dst.get().asFile.deleteRecursively()
-        dst.get().asFile.mkdirs()
-    }
-
-    from(src)
-    into(dst)
-    expand(props)
-}
-
-rootProject.idea.project.settings.taskTriggers.afterSync(generateTemplates)
-project.eclipse.synchronizationTasks(generateTemplates)
+val generateTemplates = project.createGenerateTemplate(props)
 
 val generateLang by tasks.registering(JavaExec::class) {
     workingDir = file("src/generated/resources/assets/${Props.MOD_ID}/lang")
@@ -63,11 +43,5 @@ val generateLang by tasks.registering(JavaExec::class) {
     }
 }
 
-val processResourcesAgain by tasks.registering(ProcessResources::class) {
-    dependsOn(generateLang)
-}
-
+val processResourcesAgain by tasks.registering(ProcessResources::class) { dependsOn(generateLang) }
 tasks.jar.get().dependsOn(generateLang)
-
-sourceSets["main"].resources.srcDirs("src/generated/resources")
-sourceSets["main"].java.srcDirs(generateTemplates.map { it.destinationDir })

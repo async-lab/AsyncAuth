@@ -13,4 +13,5 @@ repositories {
 dependencies {
     implementation(kotlin("gradle-plugin"))
     implementation("com.gradleup.shadow:shadow-gradle-plugin:8.3.2")
+    implementation("org.jetbrains.gradle.plugin.idea-ext:org.jetbrains.gradle.plugin.idea-ext.gradle.plugin:1.1.7")
 }
