@@ -32,25 +32,18 @@ object Process {
         )
     }
 
-    fun Project.createGenerateTemplate(props: Map<String, String>) {
-        val generateTemplates = tasks.register<Copy>("generateTemplates") {
-            val src = file(project.projectDir.resolve("src/main/templates/"))
-            val dst = layout.buildDirectory.dir("generated/sources/templates/")
-            inputs.properties(props)
+    fun Project.createGenerateTemplate(props: Map<String, String>) = tasks.register<Copy>("generateTemplates") {
+        val src = file(project.projectDir.resolve("src/main/templates/"))
+        val dst = layout.buildDirectory.dir("generated/sources/templates/")
+        inputs.properties(props)
 
-            from(src)
-            into(dst)
-            expand(props)
-        }
+        from(src)
+        into(dst)
+        expand(props)
+    }.also {
         val sourceSets = the<SourceSetContainer>()
-        sourceSets["main"].resources.srcDirs("src/generated/resources")
-        sourceSets["main"].java.srcDirs(generateTemplates.map {
-            listOf(
-                it.destinationDir.resolve("src/java"),
-                it.destinationDir.resolve("src/kotlin")
-            )
-        })
-        rootProject.the<IdeaModel>().project.settings.taskTriggers.afterSync(generateTemplates)
-        project.the<EclipseModel>().synchronizationTasks(generateTemplates)
+        sourceSets["main"].java.srcDirs(listOf("java", "kotlin").map(it.get().destinationDir::resolve))
+        rootProject.the<IdeaModel>().project.settings.taskTriggers.afterSync(it)
+        project.the<EclipseModel>().synchronizationTasks(it)
     }
 }
