@@ -29,6 +29,7 @@ dependencies {
 val props = Props.toMap()
 
 val generateTemplates = project.createGenerateTemplate(props)
+sourceSets["main"].resources.srcDirs("src/generated/resources")
 
 val generateLang by tasks.registering(JavaExec::class) {
     workingDir = file("src/generated/resources/assets/${Props.MOD_ID}/lang")

@@ -122,6 +122,7 @@ tasks.processResources {
 }
 
 val generateTemplates = project.createGenerateTemplate(props)
+sourceSets["main"].resources.srcDirs("src/generated/resources")
 
 tasks.jar {
     manifest {
