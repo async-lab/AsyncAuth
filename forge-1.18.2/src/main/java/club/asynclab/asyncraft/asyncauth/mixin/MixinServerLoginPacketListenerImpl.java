@@ -19,8 +19,7 @@ public abstract class MixinServerLoginPacketListenerImpl {
     public static int MAX_TICKS_BEFORE_LOGIN = 600;
 
     @Shadow
-    public void disconnect(Component reason) {
-    }
+    public abstract void disconnect(Component reason);
 
     @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerLoginPacketListenerImpl;tick:I", opcode = Opcodes.GETFIELD), cancellable = true)
     private void onTick(CallbackInfo ci) {

@@ -14,9 +14,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 
 
 class EventHandler {
-    @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
-    object ForgeEventBoth {}
-
     @EventBusSubscriber(
         modid = BuiltConstantsCommon.MOD_ID,
         bus = EventBusSubscriber.Bus.FORGE,
@@ -35,9 +32,6 @@ class EventHandler {
         }
     }
 
-    @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = EventBusSubscriber.Bus.FORGE, value = [Dist.CLIENT])
-    object ForgeEventClient {}
-
     @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
     object ModEventBoth {
         @SubscribeEvent
@@ -45,14 +39,4 @@ class EventHandler {
             NetworkHandler.onCommonSetup(event)
         }
     }
-
-    @EventBusSubscriber(
-        modid = BuiltConstantsCommon.MOD_ID,
-        bus = EventBusSubscriber.Bus.MOD,
-        value = [Dist.DEDICATED_SERVER]
-    )
-    object ModEventServer {}
-
-    @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = [Dist.CLIENT])
-    object ModEventClient {}
 }
