@@ -1,4 +1,4 @@
-package club.asynclab.asyncraft.asyncauth.gui.widget
+package club.asynclab.asyncraft.asyncauth.client.gui.widget
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.gui.Font

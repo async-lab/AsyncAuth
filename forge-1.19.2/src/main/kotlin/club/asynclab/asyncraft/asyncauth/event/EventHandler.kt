@@ -10,14 +10,12 @@ import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.event.server.ServerAboutToStartEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 
 
 class EventHandler {
-    @Mod.EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-    object ForgeEventBoth {}
-
-    @Mod.EventBusSubscriber(
+    @EventBusSubscriber(
         modid = BuiltConstantsCommon.MOD_ID,
         bus = Mod.EventBusSubscriber.Bus.FORGE,
         value = [Dist.DEDICATED_SERVER]
@@ -35,24 +33,11 @@ class EventHandler {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = [Dist.CLIENT])
-    object ForgeEventClient {}
-
-    @Mod.EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
     object ModEventBoth {
         @SubscribeEvent
         fun onCommonSetup(event: FMLCommonSetupEvent) {
             NetworkHandler.onCommonSetup(event)
         }
     }
-
-    @Mod.EventBusSubscriber(
-        modid = BuiltConstantsCommon.MOD_ID,
-        bus = Mod.EventBusSubscriber.Bus.MOD,
-        value = [Dist.DEDICATED_SERVER]
-    )
-    object ModEventServer {}
-
-    @Mod.EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = [Dist.CLIENT])
-    object ModEventClient {}
 }

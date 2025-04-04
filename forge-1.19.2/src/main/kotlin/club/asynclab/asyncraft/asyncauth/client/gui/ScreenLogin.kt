@@ -1,8 +1,7 @@
 package club.asynclab.asyncraft.asyncauth.client.gui
 
+import club.asynclab.asyncraft.asyncauth.client.gui.widget.EditBoxWithLabel
 import club.asynclab.asyncraft.asyncauth.common.misc.Lang
-import club.asynclab.asyncraft.asyncauth.gui.ScreenRegister
-import club.asynclab.asyncraft.asyncauth.gui.widget.EditBoxWithLabel
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
 import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketLogin
 import club.asynclab.asyncraft.asyncauth.util.UtilComponent
