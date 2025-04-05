@@ -2,9 +2,6 @@ import club.asynclab.asyncauth.Deps
 import club.asynclab.asyncauth.Process.configureGenerally
 import club.asynclab.asyncauth.Props
 import club.asynclab.asyncauth.api.toMap
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 val minecraftVersion: String by project
 val minecraftVersionRange: String by project
@@ -122,23 +119,7 @@ tasks.processResources {
 
 sourceSets["main"].resources.srcDirs("src/generated/resources")
 
-tasks.jar {
-    manifest {
-        attributes(
-            mapOf(
-                "Specification-Title" to Props.MOD_ID,
-                "Specification-Vendor" to Props.MOD_AUTHORS,
-                "Specification-Version" to "1", // We are version 1 of ourselves
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version,
-                "Implementation-Vendor" to Props.MOD_AUTHORS,
-                "Implementation-Timestamp" to DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
-                    .format(Date().toInstant().atOffset(ZoneOffset.UTC))
-            )
-        )
-    }
-    finalizedBy("reobfJar")
-}
+tasks.jar { finalizedBy("reobfJar") }
 
 tasks.compileJava { outputs.upToDateWhen { false } }
 tasks.shadowJar { configureGenerally(shade, fullShade) }
