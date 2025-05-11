@@ -13,7 +13,7 @@ object AsyncAuth {
 
     val LOGGER: Logger = LoggerFactory.getLogger(AsyncAuth::class.java)
 
-    fun resourceLocation(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(BuiltConstantsCommon.MOD_ID, path)
+    fun resourceLocation(path: String): ResourceLocation = ResourceLocation(BuiltConstantsCommon.MOD_ID, path)
 
     init {
         ModSetting.init()
