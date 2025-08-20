@@ -9,7 +9,6 @@ import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.event.server.ServerAboutToStartEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
-import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 
@@ -17,7 +16,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 class EventHandler {
     @EventBusSubscriber(
         modid = BuiltConstantsCommon.MOD_ID,
-        bus = Mod.EventBusSubscriber.Bus.FORGE,
+        bus = EventBusSubscriber.Bus.FORGE,
         value = [Dist.DEDICATED_SERVER]
     )
     object ForgeEventServer {
@@ -33,7 +32,7 @@ class EventHandler {
         }
     }
 
-    @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(modid = BuiltConstantsCommon.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
     object ModEventBoth {
         @SubscribeEvent
         fun onCommonSetup(event: FMLCommonSetupEvent) {

@@ -4,15 +4,13 @@ on:
   push:
     branches:
       - dev
-  pull_request:
-    branches:
-      - dev
+
+concurrency:
+  group: snapshot
+  cancel-in-progress: true
 
 jobs:
   publish:
-    concurrency:
-      group: snapshot
-      cancel-in-progress: true
     runs-on: ubuntu-latest
 
     steps:

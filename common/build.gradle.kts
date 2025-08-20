@@ -1,5 +1,5 @@
 import club.asynclab.asyncauth.Deps
-import club.asynclab.asyncauth.Process.createGenerateTemplates
+import club.asynclab.asyncauth.Process
 import club.asynclab.asyncauth.Props
 import club.asynclab.asyncauth.api.toMap
 
@@ -28,7 +28,7 @@ dependencies {
 
 val props = Props.toMap()
 
-val generateTemplates = createGenerateTemplates(props)
+val generateTemplates by Process.createGenerateTemplates(project)(props)
 sourceSets["main"].resources.srcDirs("src/generated/resources")
 
 val generateLang by tasks.registering(JavaExec::class) {

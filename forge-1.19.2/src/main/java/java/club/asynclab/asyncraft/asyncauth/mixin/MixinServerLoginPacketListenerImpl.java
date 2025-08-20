@@ -1,4 +1,4 @@
-package club.asynclab.asyncraft.asyncauth.mixin;
+package java.club.asynclab.asyncraft.asyncauth.mixin;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;

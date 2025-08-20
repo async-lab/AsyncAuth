@@ -20,7 +20,7 @@ import java.util.function.Supplier
 @OnlyIn(Dist.CLIENT)
 class ScreenRegister(
     ctx: Supplier<NetworkEvent.Context>,
-    deadline: Long
+    deadline: Long,
 ) : BaseScreenOnConnecting(TITLE, ctx, deadline) {
     private lateinit var passwordEditBox: EditBox
     private lateinit var confirmEditBox: EditBox
@@ -31,7 +31,6 @@ class ScreenRegister(
         super.init()
         val centerX = this.width / 2
 
-        // 密码输入框
         this.passwordEditBox = object : EditBoxWithLabel(
             this.font,
             centerX - 100, 80,
@@ -63,11 +62,8 @@ class ScreenRegister(
                 }
                 return true
             }
-        }.apply {
-            setFormatter { text: String, _: Int -> UtilComponent.getLiteralComponent("*".repeat(text.length)).visualOrderText }
-        }
+        }.apply { setFormatter { text: String, _: Int -> UtilComponent.getLiteralComponent("*".repeat(text.length)).visualOrderText } }
 
-        // 注册按钮
         this.registerButton = Button.builder(UtilComponent.getTranslatableComponent(Lang.Gui.REGISTER)) {
             if (passwordEditBox.value.isEmpty()) {
                 UtilToast.toast(UtilComponent.getTranslatableComponent(Lang.Auth.EMPTY))
@@ -82,7 +78,6 @@ class ScreenRegister(
             )
         }.bounds(centerX - 50, 170, 100, 20).build()
 
-        // 退出按钮
         this.exitButton = Button.builder(UtilComponent.getTranslatableComponent(Lang.Gui.EXIT)) {
             this@ScreenRegister.onClose()
         }.bounds(20, this.height - 40, 100, 20).build()

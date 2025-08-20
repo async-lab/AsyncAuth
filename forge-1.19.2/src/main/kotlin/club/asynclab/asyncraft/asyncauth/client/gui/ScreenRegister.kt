@@ -33,44 +33,39 @@ class ScreenRegister(
 
         this.passwordEditBox = object : EditBoxWithLabel(
             this.font,
-            centerX - 100,  // x坐标
-            80,  // y坐标
-            200, 20,  // 宽度/高度
-            UtilComponent.getTranslatableComponent(Lang.Gui.PASSWORD),
+            centerX - 100, 80,
+            200, 20,
+            UtilComponent.getTranslatableComponent(Lang.Gui.PASSWORD)
         ) {
             override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
                 when (keyCode) {
                     GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> this@ScreenRegister.registerButton.onPress()
                     else -> return super.keyPressed(keyCode, scanCode, modifiers)
                 }
-
                 return true
             }
         }.apply {
-            setFormatter { text: String, _: Int? -> UtilComponent.getLiteralComponent("*".repeat(text.length)).visualOrderText }
+            setFormatter { text: String, _: Int -> UtilComponent.getLiteralComponent("*".repeat(text.length)).visualOrderText }
         }
 
         this.confirmEditBox = object : EditBoxWithLabel(
             this.font,
-            centerX - 100,
-            120,
+            centerX - 100, 120,
             200, 20,
-            UtilComponent.getTranslatableComponent(Lang.Gui.CONFIRM_PASSWORD),
+            UtilComponent.getTranslatableComponent(Lang.Gui.CONFIRM_PASSWORD)
         ) {
             override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
                 when (keyCode) {
                     GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> this@ScreenRegister.registerButton.onPress()
                     else -> return super.keyPressed(keyCode, scanCode, modifiers)
                 }
-
                 return true
             }
-        }.apply { setFormatter { text: String, _: Int? -> UtilComponent.getLiteralComponent("*".repeat(text.length)).visualOrderText } }
+        }.apply { setFormatter { text: String, _: Int -> UtilComponent.getLiteralComponent("*".repeat(text.length)).visualOrderText } }
 
         this.registerButton = Button(
-            centerX - 50,  // x坐标
-            170,  // y坐标
-            100, 20,  // 宽度/高度
+            centerX - 50, 170,
+            100, 20,
             UtilComponent.getTranslatableComponent(Lang.Gui.REGISTER)
         ) {
             if (this.passwordEditBox.value.isEmpty()) {
@@ -87,8 +82,7 @@ class ScreenRegister(
         }
 
         this.exitButton = Button(
-            20,
-            this.height - 40,
+            20, this.height - 40,
             100, 20,
             UtilComponent.getTranslatableComponent(Lang.Gui.EXIT)
         ) { this.onClose() }
@@ -118,13 +112,11 @@ class ScreenRegister(
         super.render(poseStack, mouseX, mouseY, partialTicks)
     }
 
-
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         when (keyCode) {
             GLFW.GLFW_KEY_ESCAPE -> this.onClose()
             else -> return super.keyPressed(keyCode, scanCode, modifiers)
         }
-
         return true
     }
 

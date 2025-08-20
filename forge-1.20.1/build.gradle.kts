@@ -1,5 +1,5 @@
 import club.asynclab.asyncauth.Deps
-import club.asynclab.asyncauth.Process.configureGenerally
+import club.asynclab.asyncauth.Process
 import club.asynclab.asyncauth.Props
 import club.asynclab.asyncauth.api.toMap
 
@@ -13,7 +13,6 @@ val minecraftMappingChannel: String by project
 val minecraftMappingVersion: String by project
 val kotlinForForgeVersion: String by project
 val kotlinForForgeVersionRange: String by project
-val jeiVersion: String by project
 
 val shade: Configuration by configurations.creating
 
@@ -34,45 +33,18 @@ base.archivesName.set(Props.MOD_ID)
 kotlin.jvmToolchain(17)
 
 plugins {
-    id("net.minecraftforge.gradle") version "[6.0,6.2)"
+    id("net.minecraftforge.gradle")
     id("org.spongepowered.mixin") version "0.7-SNAPSHOT"
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
 }
 
 minecraft {
-    mappings(minecraftMappingChannel, minecraftMappingVersion)
-    accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
-
-    copyIdeResources.set(true)
-
-    runs {
-        configureEach {
-            workingDirectory(project.file("run"))
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "debug")
-
-            mods {
-                create(Props.MOD_ID) {
-                    source(sourceSets.main.get())
-                    source(project(":common").sourceSets.main.get())
-                }
-            }
-        }
-
-        create("client") { property("forge.enabledGameTestNamespaces", Props.MOD_ID) }
-        create("server") { property("forge.enabledGameTestNamespaces", Props.MOD_ID) }
-        create("gameTestServer") { property("forge.enabledGameTestNamespaces", Props.MOD_ID) }
-        create("data") {
-            workingDirectory(project.file("run-data"))
-
-            args(
-                "--mod", Props.MOD_ID,
-                "--all",
-                "--output", file("src/generated/resources/").absolutePath,
-                "--existing", file("src/main/resources/").absolutePath
-            )
-        }
-    }
+    Process.configureGenerally(this)(
+        minecraftMappingChannel,
+        minecraftMappingVersion,
+        sourceSets.main.get(),
+        project(":common").sourceSets.main.get()
+    )
 }
 
 mixin {
@@ -122,6 +94,6 @@ sourceSets["main"].resources.srcDirs("src/generated/resources")
 tasks.jar { finalizedBy("reobfJar") }
 
 tasks.compileJava { outputs.upToDateWhen { false } }
-tasks.shadowJar { configureGenerally(shade, fullShade) }
+tasks.shadowJar { Process.configureGenerally(this)(shade, fullShade) }
 reobf { create("shadowJar") {} }
 tasks.build { dependsOn("shadowJar") }
