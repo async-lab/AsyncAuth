@@ -1,5 +1,6 @@
-package java.club.asynclab.asyncraft.asyncauth.mixin;
+package club.asynclab.asyncraft.asyncauth.mixin;
 
+import club.asynclab.asyncraft.asyncauth.util.UtilComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import org.objectweb.asm.Opcodes;
@@ -23,7 +24,7 @@ public abstract class MixinServerLoginPacketListenerImpl {
     @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerLoginPacketListenerImpl;tick:I", opcode = Opcodes.GETFIELD), cancellable = true)
     private void onTick(CallbackInfo ci) {
         if (MAX_TICKS_BEFORE_LOGIN != 0 && this.tick++ == MAX_TICKS_BEFORE_LOGIN) {
-            this.disconnect(Component.translatable("multiplayer.disconnect.slow_login"));
+            this.disconnect(UtilComponent.getTranslatableComponent("multiplayer.disconnect.slow_login"));
         }
         ci.cancel();
     }
