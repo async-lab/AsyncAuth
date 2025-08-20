@@ -91,19 +91,24 @@ tasks.processResources {
 
 sourceSets["main"].resources.srcDirs("src/generated/resources")
 
-tasks.jar { finalizedBy("reobfJar") }
-
 tasks.compileJava { outputs.upToDateWhen { false } }
 tasks.shadowJar { Process.configureGenerally(this)(shade, fullShade) }
 reobf { create("shadowJar") {} }
 tasks.build { dependsOn("shadowJar") }
 
-val sibling = sourceSets.main.get()
-val brother = project(":forge-1.20.1").sourceSets.main.get()
-val generateJavaFromBrother by Process.createGenerateFromBrother(project)(sibling.java, brother.java, "java")
-val generateKtFromBrother by Process.createGenerateFromBrother(project)(sibling.kotlin, brother.kotlin, "kotlin")
+val brother = project(":forge-1.20.1")
+val generateJavaFromBrother by Process.createGenerateFromBrother(project)(
+    sourceSets.main.get().java,
+    { brother.sourceSets.main.get().java.srcDirs },
+    "java"
+)
+val generateKtFromBrother by Process.createGenerateFromBrother(project)(
+    sourceSets.main.get().kotlin,
+    { brother.sourceSets.main.get().kotlin.srcDirs.filter { it.path.contains("kotlin") } },
+    "kotlin"
+)
 val generateResourcesFromBrother by Process.createGenerateFromBrother(project)(
-    sibling.resources,
-    brother.resources,
+    sourceSets.main.get().resources,
+    { brother.sourceSets.main.get().resources.srcDirs },
     "resources"
 )

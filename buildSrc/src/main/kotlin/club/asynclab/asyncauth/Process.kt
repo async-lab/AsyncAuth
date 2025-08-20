@@ -16,6 +16,7 @@ import org.gradle.plugins.ide.eclipse.model.EclipseModel
 import org.gradle.plugins.ide.idea.model.IdeaModel
 import org.jetbrains.gradle.ext.settings
 import org.jetbrains.gradle.ext.taskTriggers
+import java.io.File
 
 object Process {
     fun configureGenerally(shadowJar: ShadowJar): (shade: Configuration, fullShade: Configuration) -> ShadowJar =
@@ -104,17 +105,17 @@ object Process {
             }
         }
 
-    fun createGenerateFromBrother(project: Project): ((selfDirSet: SourceDirectorySet, brotherDirSet: SourceDirectorySet, outputDir: String) -> SimpleDelegator<TaskProvider<Sync>>) =
-        { selfDirSet: SourceDirectorySet, brotherDirSet: SourceDirectorySet, outputDir: String ->
+    fun createGenerateFromBrother(project: Project): ((selfDirSet: SourceDirectorySet, brotherDirsProvider: () -> Iterable<File>, outputDir: String) -> SimpleDelegator<TaskProvider<Sync>>) =
+        { selfDirSet: SourceDirectorySet, brotherDirsProvider: () -> Iterable<File>, outputDir: String ->
             project.run {
                 SimpleDelegator({ name ->
                     val generatedDir = layout.projectDirectory.dir("src/generated/brother/$outputDir")
                     tasks.register<Sync>(name) {
                         description = "Generates sources from brother, excluding files that are already present."
 
-                        from(brotherDirSet) {
-                            exclude { file ->
-                                val relativePath = file.relativePath.pathString
+                        from(brotherDirsProvider) {
+                            exclude { element ->
+                                val relativePath = element.relativePath.pathString
                                 val existsInSelf = selfDirSet.srcDirs
                                     .filterNot { it.startsWith(generatedDir.asFile) }
                                     .any { it.resolve(relativePath).isFile }
@@ -125,11 +126,11 @@ object Process {
                             }
                         }
 
-                        exclude { file ->
-                            if (!file.file.startsWith(generatedDir.asFile)) false
+                        exclude { element ->
+                            if (!element.file.startsWith(generatedDir.asFile)) false
                             else {
-                                val relativePath = file.relativePath.pathString
-                                val existsInSelf = brotherDirSet.srcDirs
+                                val relativePath = element.relativePath.pathString
+                                val existsInSelf = brotherDirsProvider()
                                     .none { it.resolve(relativePath).isFile }
                                 if (existsInSelf) {
                                     println("Excluding '${relativePath}' because it is not existed in brother.")
@@ -138,6 +139,10 @@ object Process {
                             }
                         }
                         into(generatedDir)
+
+                        doLast {
+                            delete(generatedDir.asFile.walk().drop(1).filter { it.walk().none(File::isFile) }.toList())
+                        }
                     }
                 }, { generateFromBrother ->
                     selfDirSet.srcDirs(generateFromBrother)

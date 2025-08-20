@@ -91,8 +91,6 @@ tasks.processResources {
 
 sourceSets["main"].resources.srcDirs("src/generated/resources")
 
-tasks.jar { finalizedBy("reobfJar") }
-
 tasks.compileJava { outputs.upToDateWhen { false } }
 tasks.shadowJar { Process.configureGenerally(this)(shade, fullShade) }
 reobf { create("shadowJar") {} }
