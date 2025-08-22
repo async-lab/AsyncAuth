@@ -91,10 +91,9 @@ tasks.processResources {
 
 sourceSets["main"].resources.srcDirs("src/generated/resources")
 
-tasks.compileJava { outputs.upToDateWhen { false } }
 tasks.shadowJar { Process.configureGenerally(this)(shade, fullShade) }
-reobf { create("shadowJar") {} }
 tasks.build { dependsOn("shadowJar") }
+reobf { create("shadowJar") { extraMappings.from(layout.buildDirectory.file("tmp/compileJava/compileJava-mappings.tsrg")) } }
 
 val brother = project(":forge-1.20.1")
 val generateJavaFromBrother by Process.createGenerateFromBrother(project)(
