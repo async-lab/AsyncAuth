@@ -8,7 +8,7 @@ val slf4jVersion: String by project
 version = Props.MOD_VERSION
 group = Props.MOD_GROUP_ID
 base.archivesName.set("${Props.MOD_ID}-common")
-kotlin.jvmToolchain(8)
+kotlin.jvmToolchain(17)
 
 dependencies {
     val slf4jApi = "org.slf4j:slf4j-api:2.0.7"
