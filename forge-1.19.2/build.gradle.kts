@@ -1,11 +1,7 @@
 import club.asynclab.asyncauth.Deps
-import club.asynclab.asyncauth.Process.configureGenerally
-import club.asynclab.asyncauth.Process.createGenerateTemplate
+import club.asynclab.asyncauth.Process
 import club.asynclab.asyncauth.Props
 import club.asynclab.asyncauth.api.toMap
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 val minecraftVersion: String by project
 val minecraftVersionRange: String by project
@@ -17,7 +13,6 @@ val minecraftMappingChannel: String by project
 val minecraftMappingVersion: String by project
 val kotlinForForgeVersion: String by project
 val kotlinForForgeVersionRange: String by project
-val jeiVersion: String by project
 
 val shade: Configuration by configurations.creating
 
@@ -38,45 +33,18 @@ base.archivesName.set(Props.MOD_ID)
 kotlin.jvmToolchain(17)
 
 plugins {
-    id("net.minecraftforge.gradle") version "[6.0,6.2)"
+    id("net.minecraftforge.gradle")
     id("org.spongepowered.mixin") version "0.7-SNAPSHOT"
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
 }
 
 minecraft {
-    mappings(minecraftMappingChannel, minecraftMappingVersion)
-    accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
-
-    copyIdeResources.set(true)
-
-    runs {
-        configureEach {
-            workingDirectory(project.file("run"))
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "debug")
-
-            mods {
-                create(Props.MOD_ID) {
-                    source(sourceSets.main.get())
-                    source(project(":common").sourceSets.main.get())
-                }
-            }
-        }
-
-        create("client") { property("forge.enabledGameTestNamespaces", Props.MOD_ID) }
-        create("server") { property("forge.enabledGameTestNamespaces", Props.MOD_ID) }
-        create("gameTestServer") { property("forge.enabledGameTestNamespaces", Props.MOD_ID) }
-        create("data") {
-            workingDirectory(project.file("run-data"))
-
-            args(
-                "--mod", Props.MOD_ID,
-                "--all",
-                "--output", file("src/generated/resources/").absolutePath,
-                "--existing", file("src/main/resources/").absolutePath
-            )
-        }
-    }
+    Process.configureGenerally(this)(
+        minecraftMappingChannel,
+        minecraftMappingVersion,
+        sourceSets.main.get(),
+        project(":common").sourceSets.main.get()
+    )
 }
 
 mixin {
@@ -121,27 +89,25 @@ tasks.processResources {
     }
 }
 
-val generateTemplates = project.createGenerateTemplate(props)
+sourceSets["main"].resources.srcDirs("src/generated/resources")
 
-tasks.jar {
-    manifest {
-        attributes(
-            mapOf(
-                "Specification-Title" to Props.MOD_ID,
-                "Specification-Vendor" to Props.MOD_AUTHORS,
-                "Specification-Version" to "1", // We are version 1 of ourselves
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version,
-                "Implementation-Vendor" to Props.MOD_AUTHORS,
-                "Implementation-Timestamp" to DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
-                    .format(Date().toInstant().atOffset(ZoneOffset.UTC))
-            )
-        )
-    }
-    finalizedBy("reobfJar")
-}
-
-tasks.compileJava { outputs.upToDateWhen { false } }
-tasks.shadowJar { configureGenerally(shade, fullShade) }
-reobf { create("shadowJar") {} }
+tasks.shadowJar { Process.configureGenerally(this)(shade, fullShade) }
 tasks.build { dependsOn("shadowJar") }
+reobf { create("shadowJar") { extraMappings.from(layout.buildDirectory.file("tmp/compileJava/compileJava-mappings.tsrg")) } }
+
+val brother = project(":forge-1.20.1")
+val generateJavaFromBrother by Process.createGenerateFromBrother(project)(
+    sourceSets.main.get().java,
+    { brother.sourceSets.main.get().java.srcDirs },
+    "java"
+)
+val generateKtFromBrother by Process.createGenerateFromBrother(project)(
+    sourceSets.main.get().kotlin,
+    { brother.sourceSets.main.get().kotlin.srcDirs.filter { it.path.contains("kotlin") } },
+    "kotlin"
+)
+val generateResourcesFromBrother by Process.createGenerateFromBrother(project)(
+    sourceSets.main.get().resources,
+    { brother.sourceSets.main.get().resources.srcDirs },
+    "resources"
+)

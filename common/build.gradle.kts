@@ -1,5 +1,5 @@
 import club.asynclab.asyncauth.Deps
-import club.asynclab.asyncauth.Process.createGenerateTemplate
+import club.asynclab.asyncauth.Process
 import club.asynclab.asyncauth.Props
 import club.asynclab.asyncauth.api.toMap
 
@@ -8,7 +8,7 @@ val slf4jVersion: String by project
 version = Props.MOD_VERSION
 group = Props.MOD_GROUP_ID
 base.archivesName.set("${Props.MOD_ID}-common")
-kotlin.jvmToolchain(8)
+kotlin.jvmToolchain(17)
 
 dependencies {
     val slf4jApi = "org.slf4j:slf4j-api:2.0.7"
@@ -28,7 +28,8 @@ dependencies {
 
 val props = Props.toMap()
 
-val generateTemplates = project.createGenerateTemplate(props)
+val generateTemplates by Process.createGenerateTemplates(project)(props)
+sourceSets["main"].resources.srcDirs("src/generated/resources")
 
 val generateLang by tasks.registering(JavaExec::class) {
     workingDir = file("src/generated/resources/assets/${Props.MOD_ID}/lang")

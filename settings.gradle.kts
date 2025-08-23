@@ -1,8 +1,8 @@
 pluginManagement {
     repositories {
-        maven { url = uri("https://maven.neoforged.net/releases") }
-        maven { url = uri("https://maven.parchmentmc.org") }
-        maven { url = uri("https://repo.spongepowered.org/repository/maven-public/") }
+        maven("https://maven.neoforged.net/releases")
+        maven("https://maven.parchmentmc.org")
+        maven("https://repo.spongepowered.org/repository/maven-public/")
         gradlePluginPortal()
         mavenCentral()
     }

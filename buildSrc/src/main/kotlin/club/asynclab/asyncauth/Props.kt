@@ -7,7 +7,7 @@ object Props : IConstants {
     const val MOD_NAME = "AsyncAuth"
     const val MOD_GROUP_ID = "club.asynclab.asyncraft"
     const val MOD_LICENSE = "AGPLv3"
-    const val MOD_VERSION = "1.0.0"
+    const val MOD_VERSION = "1.0.1"
     const val MOD_AUTHORS = "dsx137"
     const val MOD_CREDITS = "None"
     const val MOD_DESCRIPTION = "Auth mod."

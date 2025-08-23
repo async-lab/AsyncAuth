@@ -94,23 +94,3 @@ sourceSets["main"].resources.srcDirs("src/generated/resources")
 tasks.shadowJar { Process.configureGenerally(this)(shade, fullShade) }
 tasks.build { dependsOn("shadowJar") }
 reobf { create("shadowJar") { extraMappings.from(layout.buildDirectory.file("tmp/compileJava/compileJava-mappings.tsrg")) } }
-
-val brother = project(":forge-1.19.2")
-val generateJavaFromBrother by Process.createGenerateFromBrother(project)(
-    sourceSets.main.get().java,
-    { brother.sourceSets.main.get().java.srcDirs },
-    "java"
-)
-val generateKtFromBrother by Process.createGenerateFromBrother(project)(
-    sourceSets.main.get().kotlin,
-    { brother.sourceSets.main.get().kotlin.srcDirs.filter { it.path.contains("kotlin") } },
-    "kotlin"
-)
-val generateResourcesFromBrother by Process.createGenerateFromBrother(project)(
-    sourceSets.main.get().resources,
-    { brother.sourceSets.main.get().resources.srcDirs },
-    "resources"
-)
-generateJavaFromBrother { dependsOn(brother.tasks.named("generateJavaFromBrother")) }
-generateKtFromBrother { dependsOn(brother.tasks.named("generateKtFromBrother")) }
-generateResourcesFromBrother { dependsOn(brother.tasks.named("generateResourcesFromBrother")) }
