@@ -43,6 +43,11 @@ val generateLang by tasks.registering(JavaExec::class) {
         workingDir.mkdirs()
     }
 }
+tasks.named<Delete>("clean") { delete(generateLang) }
 
-val processResourcesAgain by tasks.registering(ProcessResources::class) { dependsOn(generateLang) }
-tasks.jar.get().dependsOn(generateLang)
+val processResourcesGenerateLang by tasks.registering(ProcessResources::class) {
+    dependsOn(generateLang)
+    from(generateLang)
+    into(project.layout.buildDirectory.dir("resources/main/assets/${Props.MOD_ID}/lang"))
+}
+tasks.jar { dependsOn(generateLang, processResourcesGenerateLang) }
