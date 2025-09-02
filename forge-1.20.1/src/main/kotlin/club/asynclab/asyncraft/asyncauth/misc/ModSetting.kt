@@ -11,19 +11,25 @@ import net.minecraftforge.fml.config.ModConfig
 object ModSetting {
     private val SPEC: ForgeConfigSpec
 
-    private const val DATABASE_TABLE: String = "database"
-    val port: ConfigValue<Int>
-    val username: ConfigValue<String>
-    val password: ConfigValue<String>
-    val database: ConfigValue<String>
-    val table: ConfigValue<String>
-    val useSSL: ConfigValue<Boolean>
-    val address: ConfigValue<String>
+    val enabled: ConfigValue<Boolean>
     val minLength: ConfigValue<Int>
     val timeout: ConfigValue<Int>
 
+    private const val DATABASE_TABLE: String = "database"
+    val address: ConfigValue<String>
+    val port: ConfigValue<Int>
+    val database: ConfigValue<String>
+    val table: ConfigValue<String>
+    val useSSL: ConfigValue<Boolean>
+    val username: ConfigValue<String>
+    val password: ConfigValue<String>
+
     init {
         val builder = ForgeConfigSpec.Builder()
+
+        enabled = builder.define("enabled", true)
+        timeout = builder.define("timeout", 180)
+        minLength = builder.define("minLength", 6)
 
         builder.push(DATABASE_TABLE)
         address = builder.define("address", "127.0.0.1")
@@ -35,8 +41,6 @@ object ModSetting {
         password = builder.define("password", "123456")
         builder.pop()
 
-        minLength = builder.define("minLength", 6)
-        timeout = builder.define("timeout", 180)
         SPEC = builder.build()
     }
 

@@ -1,7 +1,6 @@
 package club.asynclab.asyncraft.asyncauth.network.packet.login
 
 import club.asynclab.asyncraft.asyncauth.client.gui.ScreenLogin
-import club.asynclab.asyncraft.asyncauth.client.gui.ScreenRegister
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraftforge.network.NetworkEvent
@@ -21,7 +20,6 @@ class PacketInit(
             ctx.get().enqueueWork {
 //                Minecraft.getInstance().pushGuiLayer(ScreenLogin(ctx, Instant.now().epochSecond + packet.timeout))
                 Minecraft.getInstance().setScreen(ScreenLogin(ctx, Instant.now().epochSecond + packet.timeout))
-
             }
 
             ctx.get().packetHandled = true
