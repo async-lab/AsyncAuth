@@ -6,6 +6,14 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+buildscript {
+    repositories {
+        maven("https://maven.neoforged.net/releases")
+        maven("https://maven.aliyun.com/repository/public/")
+        mavenCentral()
+    }
+}
+
 plugins {
     id("org.jetbrains.gradle.plugin.idea-ext")
     kotlin("plugin.serialization") version "1.9.23" apply false
@@ -28,7 +36,7 @@ subprojects {
     ).forEach(plugins::apply)
 
     repositories {
-        maven("https://maven.aliyun.com/repository/public/")
+        maven("https://maven.neoforged.net/releases")
         maven("https://jitpack.io")
         maven("https://thedarkcolour.github.io/KotlinForForge/")
         maven("https://modmaven.dev")
