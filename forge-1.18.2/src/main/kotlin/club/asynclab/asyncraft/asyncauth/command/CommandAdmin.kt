@@ -20,7 +20,7 @@ object CommandAdmin {
     fun getBuilder(): LiteralArgumentBuilder<CommandSourceStack> {
         return Commands.literal("admin").then(
             Commands.literal("changepassword").then(
-                Commands.argument("player", EntityArgument.player()).then(
+                Commands.argument("player", StringArgumentType.string()).then(
                     Commands.argument("password", StringArgumentType.string()).executes(::changePassword)
                 )
             )
@@ -29,7 +29,7 @@ object CommandAdmin {
 
     @Throws(CommandSyntaxException::class)
     private fun changePassword(ctx: CommandContext<CommandSourceStack>): Int {
-        val player = EntityArgument.getPlayer(ctx, "player")
+        val playerName = StringArgumentType.getString(ctx, "player")
         val password = StringArgumentType.getString(ctx, "password")
         val minLength = ModSetting.minLength.get()
 
@@ -38,9 +38,9 @@ object CommandAdmin {
             return 1
         }
 
-        val result = ModContext.Server.MANAGER_AUTH.changePassword(player.name.string, password)
+        val result = ModContext.Server.MANAGER_AUTH.changePassword(playerName, password)
         ctx.source.sendSuccess(TranslatableComponent(Lang.Auth.from(result)), false)
-        player.sendMessage(TranslatableComponent(Lang.Commands.PASSWORD_CHANGED), Util.NIL_UUID)
+//        pla.sendMessage(TranslatableComponent(Lang.Commands.PASSWORD_CHANGED), Util.NIL_UUID)
 
         return if (result == AuthStatus.SUCCESS) CommandStatus.SUCCESS.status else CommandStatus.FAILED.status
     }

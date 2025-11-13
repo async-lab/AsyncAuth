@@ -53,7 +53,7 @@ object ModSetting {
             .registerConfig(ModConfig.Type.SERVER, SPEC, "${BuiltConstantsCommon.MOD_ID}-server.toml")
     }
 
-//    fun onServerAboutToStart(event: ServerAboutToStartEvent) {
+    fun onServerAboutToStart(event: ServerAboutToStartEvent) {
 //        ServerLoginPacketListenerImpl.MAX_TICKS_BEFORE_LOGIN = timeout.get() * 20
-//    }
+    }
 }
