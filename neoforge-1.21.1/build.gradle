@@ -1,0 +1,140 @@
+import club.asynclab.asyncauth.Deps
+import club.asynclab.asyncauth.Process
+import club.asynclab.asyncauth.Props
+import club.asynclab.asyncauth.api.IConstantsKt
+import org.gradle.api.tasks.compile.JavaCompile
+
+plugins {
+    id 'net.neoforged.moddev' version '2.0.116'
+}
+
+ext.minecraftVersion = project.minecraftVersion
+ext.parchmentMinecraftVersion = project.parchmentMinecraftVersion
+ext.minecraftVersionRange = project.minecraftVersionRange
+ext.neo_version = project.neo_version
+ext.neo_version_range = project.neo_version_range
+ext.modLoader = project.modLoader
+ext.modLoaderVersionRange = project.modLoaderVersionRange
+ext.minecraftMappingChannel = project.minecraftMappingChannel
+ext.minecraftMappingVersion = project.minecraftMappingVersion
+ext.kotlinForForgeVersion = project.kotlinForForgeVersion
+ext.kotlinForForgeVersionRange = project.kotlinForForgeVersionRange
+
+def shadeCfg = configurations.create('shade')
+def fullShadeCfg = configurations.create('fullShade')
+configurations.create('implementationWithShade')
+
+def implementationWithShadeCfg = configurations.named('implementationWithShade').get()
+
+shadeCfg.extendsFrom(fullShadeCfg)
+configurations.implementation.extendsFrom(implementationWithShadeCfg)
+shadeCfg.extendsFrom(implementationWithShadeCfg)
+
+version = "neoforge-${minecraftVersion}-${Props.MOD_VERSION}"
+group = Props.MOD_GROUP_ID
+archivesBaseName = Props.MOD_ID
+
+kotlin {
+    jvmToolchain(21)
+}
+
+dependencies {
+    def mx = 'org.spongepowered:mixin:0.8.5:processor'
+    def kff = "thedarkcolour:kotlinforforge-neoforge:${kotlinForForgeVersion}"
+
+    annotationProcessor mx
+    implementation kff
+
+    implementationWithShade project(':common')
+    implementationWithShade(Deps.HIKARI) {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+    implementationWithShade Deps.MYSQL
+    fullShade Deps.MYSQL
+}
+
+ext.mixinRefmap = "${Props.MOD_ID}.refmap.json"
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.addAll([
+            "-AoutRefMap=${mixinRefmap}",
+            "-AdefaultObfuscationEnv=named"
+    ])
+}
+
+def props = [
+        'minecraft_version'          : minecraftVersion,
+        'minecraft_version_range'    : minecraftVersionRange,
+        'neo_version'                : neo_version,
+        'neo_version_range'          : neo_version_range,
+        'mod_loader'                 : modLoader,
+        'mod_loader_version_range'   : modLoaderVersionRange,
+        'kotlin_for_forge_version'   : kotlinForForgeVersion,
+        'kotlin_for_forge_version_range': kotlinForForgeVersionRange,
+] + IConstantsKt.toMap(Props.INSTANCE)
+
+processResources {
+    inputs.properties(props)
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
+        expand props
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/generated/resources'
+        }
+    }
+}
+
+tasks.named('shadowJar') { shadow ->
+    def configurator = Process.INSTANCE.configureGenerally(shadow)
+    configurator.invoke(shadeCfg, fullShadeCfg)
+}
+
+build.dependsOn tasks.named('shadowJar')
+
+neoForge {
+    version = neo_version
+    validateAccessTransformers = true
+
+    accessTransformers.from "src/main/resources/META-INF/accesstransformer.cfg"
+
+    parchment {
+        mappingsVersion = minecraftMappingVersion
+        minecraftVersion = parchmentMinecraftVersion
+    }
+
+    runs {
+
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', Props.MOD_ID
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', Props.MOD_ID
+        }
+
+        gameTestServer {
+            type = 'gameTestServer'
+            systemProperty 'neoforge.enabledGameTestNamespaces', Props.MOD_ID
+        }
+
+        data {
+            data()
+            programArguments.addAll '--mod', Props.MOD_ID,
+                    '--all',
+                    '--output', file('src/generated/resources/').absolutePath,
+                    '--existing', file('src/main/resources/').absolutePath
+        }
+    }
+}

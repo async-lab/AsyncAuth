@@ -16,8 +16,8 @@ buildscript {
 
 plugins {
     id("org.jetbrains.gradle.plugin.idea-ext")
-    kotlin("plugin.serialization") version "1.9.23" apply false
-    kotlin("plugin.lombok") version "1.9.23" apply false
+    kotlin("plugin.serialization") version "2.2.20" apply false
+    kotlin("plugin.lombok") version "2.2.20" apply false
 }
 
 subprojects {
@@ -31,15 +31,17 @@ subprojects {
         "org.jetbrains.gradle.plugin.idea-ext",
         "org.jetbrains.kotlin.jvm",
         "org.jetbrains.kotlin.kapt",
-        "org.jetbrains.kotlin.plugin.serialization",
-        "org.jetbrains.kotlin.plugin.lombok"
+        "org.jetbrains.kotlin.plugin.serialization"
     ).forEach(plugins::apply)
 
     repositories {
-        maven("https://maven.neoforged.net/releases")
+//        maven("https://maven.neoforged.net/releases")
         maven("https://jitpack.io")
         maven("https://thedarkcolour.github.io/KotlinForForge/")
         maven("https://modmaven.dev")
+        maven("https://neoforged.forgecdn.net/releases")
+        maven("https://libraries.minecraft.net")
+        maven("https://neoforged.forgecdn.net/mojang-meta")
         maven("https://www.cursemaven.com") { content { includeGroup("curse.maven") } }
         mavenLocal()
         mavenCentral()

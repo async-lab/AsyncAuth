@@ -13,7 +13,7 @@ plugins {
 }
 
 fileTree(rootProject.projectDir)
-    .matching { include("*/build.gradle.kts") }
+    .matching { include("*/build.gradle.kts", "*/build.gradle") }
     .files.map { it.parentFile.name }
     .filter { it != "buildSrc" }
     .forEach { include(it) }
