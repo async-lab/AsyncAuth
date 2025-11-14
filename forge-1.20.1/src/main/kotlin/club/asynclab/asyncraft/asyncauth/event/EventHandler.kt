@@ -8,6 +8,7 @@ import club.asynclab.asyncraft.asyncauth.registry.ModCommands
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.event.server.ServerAboutToStartEvent
+import net.minecraftforge.event.server.ServerStoppedEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
@@ -24,6 +25,11 @@ class EventHandler {
         fun onServerAboutToStart(event: ServerAboutToStartEvent) {
             ModSetting.onServerAboutToStart(event)
             ModContext.onServerAboutToStart(event)
+        }
+
+        @SubscribeEvent
+        fun onServerStopped(event: ServerStoppedEvent) {
+            ModSetting.onServerStopped(event)
         }
 
         @SubscribeEvent

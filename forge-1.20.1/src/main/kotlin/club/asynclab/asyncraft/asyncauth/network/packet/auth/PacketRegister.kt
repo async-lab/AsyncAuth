@@ -20,7 +20,10 @@ class PacketRegister(
         fun handle(packet: PacketRegister, ctx: Supplier<NetworkEvent.Context>) {
             ctx.get().enqueueWork {
                 val status = ModContext.Server.MANAGER_AUTH.register(packet.username, packet.password)
-                NetworkHandler.LOGIN.reply(PacketResponse(status, false), ctx.get())
+                NetworkHandler.LOGIN.reply(
+                    PacketResponse(status, false, null, 0L, false),
+                    ctx.get()
+                )
             }
 
             ctx.get().packetHandled = true

@@ -1,7 +1,6 @@
 package club.asynclab.asyncraft.asyncauth.client.gui
 
-import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
-import club.asynclab.asyncraft.asyncauth.network.packet.misc.PacketHeart
+import club.asynclab.asyncraft.asyncauth.client.ManagerClient
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraftforge.network.NetworkEvent
@@ -14,13 +13,17 @@ open class BaseScreenOnConnecting(
 ) : Screen(title) {
     private var heart = 0
 
+    init {
+        ManagerClient.attachContext(ctx)
+    }
+
     override fun tick() {
         super.tick()
         if (!ctx.get().networkManager.isConnected) {
             this.onClose()
         }
         if (heart++ > 200) {
-            ctx.get().enqueueWork { NetworkHandler.LOGIN.reply(PacketHeart(), ctx.get()) }
+            ManagerClient.sendHeartbeat()
             heart = 0
         }
     }

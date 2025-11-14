@@ -1,12 +1,15 @@
 package club.asynclab.asyncraft.asyncauth.misc
 
 import club.asynclab.asyncraft.asyncauth.built.BuiltConstantsCommon
+import club.asynclab.asyncraft.asyncauth.common.manager.ManagerTokenServer
 import net.minecraft.server.network.ServerLoginPacketListenerImpl
 import net.minecraftforge.common.ForgeConfigSpec
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue
 import net.minecraftforge.event.server.ServerAboutToStartEvent
+import net.minecraftforge.event.server.ServerStoppedEvent
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.config.ModConfig
+import net.minecraftforge.fml.config.ConfigTracker
 
 object ModSetting {
     private val SPEC: ForgeConfigSpec
@@ -14,6 +17,7 @@ object ModSetting {
     val enabled: ConfigValue<Boolean>
     val minLength: ConfigValue<Int>
     val timeout: ConfigValue<Int>
+    val tokenExpiryMinutes: ConfigValue<Int>
 
     private const val DATABASE_TABLE: String = "database"
     val address: ConfigValue<String>
@@ -29,6 +33,7 @@ object ModSetting {
 
         enabled = builder.define("enabled", true)
         timeout = builder.define("timeout", 180)
+        tokenExpiryMinutes = builder.define("tokenExpiryMinutes", 10)
         minLength = builder.define("minLength", 6)
 
         builder.push(DATABASE_TABLE)
@@ -55,5 +60,13 @@ object ModSetting {
 
     fun onServerAboutToStart(event: ServerAboutToStartEvent) {
         ServerLoginPacketListenerImpl.MAX_TICKS_BEFORE_LOGIN = timeout.get() * 20
+        ManagerTokenServer.configure(tokenExpiryMinutes.get())
+        val configDir = event.server.serverDirectory.toPath().resolve("config")
+        ConfigTracker.INSTANCE.loadConfigs(ModConfig.Type.SERVER, configDir)
+    }
+
+    fun onServerStopped(event: ServerStoppedEvent) {
+        val configDir = event.server.serverDirectory.toPath().resolve("config")
+        ConfigTracker.INSTANCE.unloadConfigs(ModConfig.Type.SERVER, configDir)
     }
 }

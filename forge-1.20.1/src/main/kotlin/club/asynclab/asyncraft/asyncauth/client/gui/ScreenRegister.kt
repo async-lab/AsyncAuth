@@ -1,9 +1,8 @@
 package club.asynclab.asyncraft.asyncauth.client.gui
 
+import club.asynclab.asyncraft.asyncauth.client.ManagerClient
 import club.asynclab.asyncraft.asyncauth.client.gui.widget.EditBoxWithLabel
 import club.asynclab.asyncraft.asyncauth.common.misc.Lang
-import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
-import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketRegister
 import club.asynclab.asyncraft.asyncauth.util.UtilComponent
 import club.asynclab.asyncraft.asyncauth.util.UtilToast
 import net.minecraft.client.Minecraft
@@ -72,10 +71,7 @@ class ScreenRegister(
                 UtilToast.toast(UtilComponent.getTranslatableComponent(Lang.Msg.PASSWORD_NOT_MATCH))
                 return@builder
             }
-            NetworkHandler.LOGIN.reply(
-                PacketRegister(Minecraft.getInstance().user.name, passwordEditBox.value),
-                this@ScreenRegister.ctx.get()
-            )
+            ManagerClient.register(Minecraft.getInstance().user.name, passwordEditBox.value)
         }.bounds(centerX - 50, 170, 100, 20).build()
 
         this.exitButton = Button.builder(UtilComponent.getTranslatableComponent(Lang.Gui.EXIT)) {

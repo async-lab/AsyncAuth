@@ -1,9 +1,8 @@
 package club.asynclab.asyncraft.asyncauth.client.gui
 
+import club.asynclab.asyncraft.asyncauth.client.ManagerClient
 import club.asynclab.asyncraft.asyncauth.client.gui.widget.EditBoxWithLabel
 import club.asynclab.asyncraft.asyncauth.common.misc.Lang
-import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
-import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketLogin
 import club.asynclab.asyncraft.asyncauth.util.UtilComponent
 import club.asynclab.asyncraft.asyncauth.util.UtilNetwork.disconnect
 import club.asynclab.asyncraft.asyncauth.util.UtilToast
@@ -11,7 +10,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
-import net.minecraft.network.chat.Component
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.api.distmarker.OnlyIn
 import net.minecraftforge.network.NetworkEvent
@@ -52,10 +50,8 @@ class ScreenLogin(ctx: Supplier<NetworkEvent.Context>, deadline: Long) : BaseScr
                 UtilToast.toast(UtilComponent.getTranslatableComponent(Lang.Auth.EMPTY))
                 return@builder
             }
-            NetworkHandler.LOGIN.reply(
-                PacketLogin(Minecraft.getInstance().user.name, passwordEditBox.value),
-                this@ScreenLogin.ctx.get()
-            )
+            ManagerClient.attachContext(this@ScreenLogin.ctx)
+            ManagerClient.login(Minecraft.getInstance().user.name, passwordEditBox.value)
         }.bounds(centerX - 100, 150, 100, 20).build()
 
         this.registerButton = Button.builder(UtilComponent.getTranslatableComponent(Lang.Gui.REGISTER)) {

@@ -1,5 +1,7 @@
 package club.asynclab.asyncraft.asyncauth.network.packet.login
 
+import club.asynclab.asyncraft.asyncauth.client.ManagerClient
+import club.asynclab.asyncraft.asyncauth.client.gui.ScreenAutoLogin
 import club.asynclab.asyncraft.asyncauth.client.gui.ScreenLogin
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
@@ -19,7 +21,12 @@ class PacketInit(
         fun handle(packet: PacketInit, ctx: Supplier<NetworkEvent.Context>) {
             ctx.get().enqueueWork {
 //                Minecraft.getInstance().pushGuiLayer(ScreenLogin(ctx, Instant.now().epochSecond + packet.timeout))
-                Minecraft.getInstance().setScreen(ScreenLogin(ctx, Instant.now().epochSecond + packet.timeout))
+                val deadline = Instant.now().epochSecond + packet.timeout
+                if (ManagerClient.tryAutoLogin(ctx, deadline)) {
+                    Minecraft.getInstance().setScreen(ScreenAutoLogin(ctx, deadline))
+                } else {
+                    Minecraft.getInstance().setScreen(ScreenLogin(ctx, deadline))
+                }
             }
 
             ctx.get().packetHandled = true

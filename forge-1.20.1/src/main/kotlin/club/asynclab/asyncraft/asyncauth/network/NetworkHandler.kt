@@ -5,6 +5,7 @@ import club.asynclab.asyncraft.asyncauth.misc.ModSetting
 import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketLogin
 import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketRegister
 import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketResponse
+import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketTokenAuth
 import club.asynclab.asyncraft.asyncauth.network.packet.login.BasePacketLogin
 import club.asynclab.asyncraft.asyncauth.network.packet.login.PacketFinish
 import club.asynclab.asyncraft.asyncauth.network.packet.login.PacketInit
@@ -16,7 +17,7 @@ import net.minecraftforge.network.simple.SimpleChannel
 
 
 object NetworkHandler {
-    private const val VERSION = "1.0"
+    private const val VERSION = "1.1"
     private var id = 0
 
     val LOGIN: SimpleChannel = NetworkRegistry.newSimpleChannel(
@@ -48,6 +49,11 @@ object NetworkHandler {
             .encoder(PacketRegister::encode)
             .decoder(PacketRegister::decode)
             .consumerNetworkThread(PacketRegister::handle)
+            .add()
+        LOGIN.messageBuilder(PacketTokenAuth::class.java, id++)
+            .encoder(PacketTokenAuth::encode)
+            .decoder(PacketTokenAuth::decode)
+            .consumerNetworkThread(PacketTokenAuth::handle)
             .add()
         LOGIN.messageBuilder(PacketResponse::class.java, id++)
             .encoder(PacketResponse::encode)
