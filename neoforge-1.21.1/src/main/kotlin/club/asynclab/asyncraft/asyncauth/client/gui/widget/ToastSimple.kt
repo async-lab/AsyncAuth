@@ -22,10 +22,12 @@ class ToastSimple(
             TEXTURE,
             0,       // 屏幕X坐标
             0,       // 屏幕Y坐标
-            0,       // 纹理U偏移（像素单位）
-            64,      // 纹理V偏移（像素单位）
+            0F,       // 纹理U偏移（像素单位）
+            0F,      // 纹理V偏移（像素单位）
             width(),   // 绘制宽度（对应纹理uWidth）
-            height()   // 绘制高度（对应纹理vHeight）
+            height(),   // 绘制高度（对应纹理vHeight）
+            width(),
+            height()
         )
 
         // 绘制文本内容
@@ -43,6 +45,6 @@ class ToastSimple(
 
     companion object {
         private val TEXTURE: ResourceLocation =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/toasts.png")
+            ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/sprites/toast/system.png")
     }
 }

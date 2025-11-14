@@ -30,9 +30,10 @@ class ManagerAuth(
     }
 
     fun changePassword(username: String, password: String): AuthStatus {
-        return executeWithExceptionHandling {
-            if (this.managerDb.changePassword(username, password)) AuthStatus.SUCCESS else AuthStatus.NOT_EXISTS
-        }
+        if (this.managerDb.changePassword(username, password)) {
+            ManagerTokenServer.revoke(username)
+            return AuthStatus.SUCCESS
+        } else return AuthStatus.NOT_EXISTS
     }
 
     private fun executeWithExceptionHandling(block: () -> AuthStatus): AuthStatus {

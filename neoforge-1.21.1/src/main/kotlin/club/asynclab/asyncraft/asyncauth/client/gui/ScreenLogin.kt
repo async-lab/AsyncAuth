@@ -1,17 +1,16 @@
 package club.asynclab.asyncraft.asyncauth.client.gui
 
+import club.asynclab.asyncraft.asyncauth.client.ManagerClient
 import club.asynclab.asyncraft.asyncauth.client.gui.widget.EditBoxWithLabel
 import club.asynclab.asyncraft.asyncauth.common.misc.Lang
-import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
-import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketLogin
 import club.asynclab.asyncraft.asyncauth.util.UtilComponent
 import club.asynclab.asyncraft.asyncauth.util.UtilNetwork.disconnect
 import club.asynclab.asyncraft.asyncauth.util.UtilToast
+import com.mojang.authlib.minecraft.client.MinecraftClient
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
-import net.minecraft.network.chat.Component
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.api.distmarker.OnlyIn
 import org.lwjgl.glfw.GLFW
@@ -51,9 +50,7 @@ class ScreenLogin(deadline: Long) : BaseScreenOnConnecting(TITLE, deadline) {
                 UtilToast.toast(UtilComponent.getTranslatableComponent(Lang.Auth.EMPTY))
                 return@builder
             }
-            NetworkHandler.sendToServer(
-                PacketLogin(Minecraft.getInstance().user.name, password)
-            )
+            ManagerClient.login(Minecraft.getInstance().user.name, password)
         }.bounds(centerX - 100, 150, 100, 20).build()
 
         this.registerButton = Button.builder(UtilComponent.getTranslatableComponent(Lang.Gui.REGISTER)) {
@@ -61,7 +58,7 @@ class ScreenLogin(deadline: Long) : BaseScreenOnConnecting(TITLE, deadline) {
         }.bounds(centerX, 150, 100, 20).build()
 
         this.exitButton = Button.builder(UtilComponent.getTranslatableComponent(Lang.Gui.EXIT)) {
-            Minecraft.getInstance().connection?.connection?.disconnect()
+            ManagerClient.disconnection()
         }.bounds(20, this.height - 40, 100, 20).build()
 
         setInitialFocus(passwordEditBox)
@@ -72,7 +69,7 @@ class ScreenLogin(deadline: Long) : BaseScreenOnConnecting(TITLE, deadline) {
     }
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTicks: Float) {
-        renderMenuBackground(guiGraphics)
+        super.render(guiGraphics, mouseX, mouseY, partialTicks)
         guiGraphics.drawCenteredString(
             font,
             title,
@@ -90,7 +87,6 @@ class ScreenLogin(deadline: Long) : BaseScreenOnConnecting(TITLE, deadline) {
                 0xFF0000
             )
         }
-        super.render(guiGraphics, mouseX, mouseY, partialTicks)
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {

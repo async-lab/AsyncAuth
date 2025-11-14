@@ -6,8 +6,9 @@ import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.PacketFlow
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.neoforged.neoforge.network.handling.IPayloadContext
+import kotlin.jvm.JvmOverloads
 
-class PacketHeart(private val confirmed: Boolean = false) : CustomPacketPayload {
+class PacketHeart @JvmOverloads constructor(private val confirmed: Boolean = false) : CustomPacketPayload {
 
     override fun type(): CustomPacketPayload.Type<PacketHeart> = TYPE
 

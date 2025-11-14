@@ -1,7 +1,11 @@
 package club.asynclab.asyncraft.asyncauth.network.packet.login
 
+import club.asynclab.asyncraft.asyncauth.AsyncAuth
+import club.asynclab.asyncraft.asyncauth.client.ManagerClient
+import club.asynclab.asyncraft.asyncauth.client.gui.ScreenAutoLogin
 import club.asynclab.asyncraft.asyncauth.client.gui.ScreenLogin
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
+import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketLogin
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
@@ -30,9 +34,19 @@ class PacketInit(
 
         fun handle(packet: PacketInit, ctx: IPayloadContext) {
             ctx.enqueueWork {
+
+                val configConnection = ctx.connection()    // this is the
+                ManagerClient.attachConnection(configConnection)
+
                 val deadline = Instant.now().epochSecond + packet.timeout
-                Minecraft.getInstance().setScreen(ScreenLogin(deadline))
+                if (ManagerClient.tryAutoLogin(deadline)) {
+                    Minecraft.getInstance().setScreen(ScreenAutoLogin(deadline))
+                } else {
+                    Minecraft.getInstance().setScreen(ScreenLogin(deadline))
+                }
+
             }
+
         }
     }
 }

@@ -36,6 +36,10 @@ object Lang {
             Locale.PRC to "密码错误",
             Locale.US to "Incorrect password"
         )
+        val WRONG_OLD_PASSWORD by this.build().addTranslation(
+            Locale.PRC to "旧密码错误",
+            Locale.US to "Incorrect old password"
+        )
         val TOO_SHORT by this.build().addTranslation(
             Locale.PRC to "密码太短",
             Locale.US to "Password is to short"
@@ -52,6 +56,10 @@ object Lang {
             Locale.PRC to "用户不存在",
             Locale.US to "User does not exist"
         )
+        val TOKEN_INVALID by this.build().addTranslation(
+            Locale.PRC to "凭证已失效",
+            Locale.US to "Credentials expired"
+        )
         val UNKNOWN by this.build().addTranslation(
             Locale.PRC to "未知错误",
             Locale.US to "Unknown error"
@@ -64,6 +72,7 @@ object Lang {
             AuthStatus.EMPTY -> EMPTY
             AuthStatus.EXISTS -> EXISTS
             AuthStatus.NOT_EXISTS -> NOT_EXISTS
+            AuthStatus.TOKEN_INVALID -> TOKEN_INVALID
             else -> UNKNOWN
         }
     }
@@ -76,6 +85,10 @@ object Lang {
         val PASSWORD_NOT_MATCH by this.build().addTranslation(
             Locale.PRC to "密码不一致",
             Locale.US to "Passwords do not match"
+        )
+        val AUTO_LOGIN_SUCCESS by this.build().addTranslation(
+            Locale.PRC to "已自动登录",
+            Locale.US to "Auto login successful"
         )
     }
 
@@ -103,6 +116,14 @@ object Lang {
         val EXIT by this.build().addTranslation(
             Locale.PRC to "退出",
             Locale.US to "Exit"
+        )
+        val AUTO_LOGIN_PENDING by this.build().addTranslation(
+            Locale.PRC to "正在自动登录…",
+            Locale.US to "Attempting auto login…"
+        )
+        val OPEN_LOGIN_SCREEN by this.build().addTranslation(
+            Locale.PRC to "打开登录界面",
+            Locale.US to "Open Login Screen"
         )
     }
 

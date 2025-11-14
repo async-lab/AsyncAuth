@@ -5,6 +5,7 @@ import club.asynclab.asyncraft.asyncauth.misc.ModSetting
 import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketLogin
 import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketRegister
 import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketResponse
+import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketTokenAuth
 import club.asynclab.asyncraft.asyncauth.network.packet.login.PacketFinish
 import club.asynclab.asyncraft.asyncauth.network.packet.login.PacketInit
 import club.asynclab.asyncraft.asyncauth.network.packet.misc.PacketHeart
@@ -24,7 +25,7 @@ object NetworkHandler {
         ConfigurationTask.Type(AsyncAuth.resourceLocation("authentication"))
 
     fun registerPayloads(event: RegisterPayloadHandlersEvent) {
-        if (!ModSetting.enabled.get()) return
+        if (!ModSetting.isEnabled()) return
         val registrar = event.registrar(VERSION)
             .optional()
             .versioned(VERSION)
@@ -36,11 +37,12 @@ object NetworkHandler {
 
         registrar.commonToServer(PacketLogin.TYPE, PacketLogin.STREAM_CODEC, PacketLogin::handle)
         registrar.commonToServer(PacketRegister.TYPE, PacketRegister.STREAM_CODEC, PacketRegister::handle)
+        registrar.commonToServer(PacketTokenAuth.TYPE, PacketTokenAuth.STREAM_CODEC, PacketTokenAuth::handle)
         registrar.commonToServer(PacketFinish.TYPE, PacketFinish.STREAM_CODEC, PacketFinish::handle)
     }
 
     fun registerConfigurationTasks(event: RegisterConfigurationTasksEvent) {
-        if (!ModSetting.enabled.get()) return
+        if (!ModSetting.isEnabled()) return
         event.register(AuthConfigurationTask(event.listener, ModSetting.timeout.get()))
     }
 

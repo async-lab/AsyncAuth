@@ -7,5 +7,6 @@ enum class AuthStatus {
     EMPTY,
     EXISTS,
     NOT_EXISTS,
+    TOKEN_INVALID,
     UNKNOWN;
 }

@@ -17,7 +17,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 class EventHandler {
     @EventBusSubscriber(
         modid = BuiltConstantsCommon.MOD_ID,
-        value = [Dist.DEDICATED_SERVER]
+        value = [Dist.DEDICATED_SERVER],
     )
     object ForgeEventServer {
         @SubscribeEvent

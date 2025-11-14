@@ -1,9 +1,8 @@
 package club.asynclab.asyncraft.asyncauth.client.gui
 
+import club.asynclab.asyncraft.asyncauth.client.ManagerClient
 import club.asynclab.asyncraft.asyncauth.client.gui.widget.EditBoxWithLabel
 import club.asynclab.asyncraft.asyncauth.common.misc.Lang
-import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
-import club.asynclab.asyncraft.asyncauth.network.packet.auth.PacketRegister
 import club.asynclab.asyncraft.asyncauth.util.UtilComponent
 import club.asynclab.asyncraft.asyncauth.util.UtilToast
 import net.minecraft.client.Minecraft
@@ -72,13 +71,11 @@ class ScreenRegister(
                 return@builder
             }
 
-            NetworkHandler.sendToServer(
-                PacketRegister(Minecraft.getInstance().user.name, password)
-            )
+            ManagerClient.register(Minecraft.getInstance().user.name, password)
         }.bounds(centerX - 50, 170, 100, 20).build()
 
         this.exitButton = Button.builder(UtilComponent.getTranslatableComponent(Lang.Gui.EXIT)) {
-            onClose()
+            ManagerClient.disconnection()
         }.bounds(20, this.height - 40, 100, 20).build()
 
         setInitialFocus(passwordEditBox)
@@ -89,7 +86,7 @@ class ScreenRegister(
     }
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTicks: Float) {
-        renderMenuBackground(guiGraphics)
+        renderBackground(guiGraphics, mouseX, mouseY, partialTicks)
         guiGraphics.drawCenteredString(
             font,
             title,
