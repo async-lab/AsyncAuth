@@ -1,5 +1,6 @@
 package club.asynclab.asyncraft.asyncauth.client.gui
 
+import club.asynclab.asyncraft.asyncauth.client.ManagerClient
 import club.asynclab.asyncraft.asyncauth.client.gui.widget.EditBoxWithLabel
 import club.asynclab.asyncraft.asyncauth.common.misc.Lang
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
@@ -56,10 +57,8 @@ class ScreenLogin(ctx: Supplier<NetworkEvent.Context>, deadline: Long) : BaseScr
                 UtilToast.toast(UtilComponent.getTranslatableComponent(Lang.Auth.EMPTY))
                 return@Button
             }
-            NetworkHandler.LOGIN.reply(
-                PacketLogin(Minecraft.getInstance().user.name, passwordEditBox.value),
-                this.ctx.get()
-            )
+            ManagerClient.attachContext(this@ScreenLogin.ctx)
+            ManagerClient.login(Minecraft.getInstance().user.name, passwordEditBox.value)
         }
 
         this.registerButton = Button(

@@ -6,6 +6,7 @@ import club.asynclab.asyncraft.asyncauth.common.enumeration.PermissionLevel
 import club.asynclab.asyncraft.asyncauth.common.misc.Lang
 import club.asynclab.asyncraft.asyncauth.misc.ModContext
 import club.asynclab.asyncraft.asyncauth.misc.ModSetting
+import club.asynclab.asyncraft.asyncauth.util.UtilComponent
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
@@ -34,12 +35,12 @@ object CommandAdmin {
         val minLength = ModSetting.minLength.get()
 
         if (password.length < minLength) {
-            ctx.source.sendFailure(TranslatableComponent(Lang.Auth.TOO_SHORT))
+            ctx.source.sendFailure(UtilComponent.getTranslatableComponent(Lang.Auth.TOO_SHORT))
             return 1
         }
 
         val result = ModContext.Server.MANAGER_AUTH.changePassword(playerName, password)
-        ctx.source.sendSuccess(TranslatableComponent(Lang.Auth.from(result)), false)
+        ctx.source.sendSuccess(UtilComponent.getTranslatableComponent(Lang.Auth.from(result)), false)
 //        pla.sendMessage(TranslatableComponent(Lang.Commands.PASSWORD_CHANGED), Util.NIL_UUID)
 
         return if (result == AuthStatus.SUCCESS) CommandStatus.SUCCESS.status else CommandStatus.FAILED.status
