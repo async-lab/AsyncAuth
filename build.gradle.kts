@@ -38,7 +38,7 @@ subprojects {
 //        maven("https://maven.neoforged.net/releases")
         maven("https://jitpack.io")
         maven("https://thedarkcolour.github.io/KotlinForForge/")
-        maven("https://modmaven.dev")
+        maven("https://maven.minecraftforge.net")
         maven("https://neoforged.forgecdn.net/releases")
         maven("https://libraries.minecraft.net")
         maven("https://neoforged.forgecdn.net/mojang-meta")
@@ -77,4 +77,3 @@ subprojects {
 //        relocateToShadowPath
     }
 }
-
