@@ -2,6 +2,7 @@ package club.asynclab.asyncraft.asyncauth.network.packet.login
 
 import club.asynclab.asyncraft.asyncauth.common.misc.Lang
 import club.asynclab.asyncraft.asyncauth.common.network.NettyAttrKeys
+import club.asynclab.asyncraft.asyncauth.network.AuthTimeoutGuard
 import club.asynclab.asyncraft.asyncauth.network.NetworkHandler
 import club.asynclab.asyncraft.asyncauth.util.UtilComponent
 import net.minecraft.network.FriendlyByteBuf
@@ -22,6 +23,7 @@ class PacketFinish : CustomPacketPayload {
 
         fun handle(packet: PacketFinish, ctx: IPayloadContext) {
             ctx.enqueueWork {
+                AuthTimeoutGuard.cancel(ctx.connection().channel())
                 val authenticated = ctx.connection().channel().attr(NettyAttrKeys.AUTHENTICATED).get() == true
                 if (!authenticated) {
                     ctx.disconnect(UtilComponent.getTranslatableComponent(Lang.Msg.UNAUTHORIZED))

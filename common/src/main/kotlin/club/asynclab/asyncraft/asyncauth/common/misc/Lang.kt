@@ -90,6 +90,10 @@ object Lang {
             Locale.PRC to "已自动登录",
             Locale.US to "Auto login successful"
         )
+        val AUTH_TIMEOUT by this.build().addTranslation(
+            Locale.PRC to "登录超时，请重新连接",
+            Locale.US to "Login timed out, please reconnect"
+        )
     }
 
     object Gui : Category("gui") {

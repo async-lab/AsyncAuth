@@ -17,6 +17,9 @@ class AuthConfigurationTask(
 
     override fun run(sender: Consumer<CustomPacketPayload>) {
         listener.connection.channel().attr(NettyAttrKeys.AUTHENTICATED).set(false)
+        // 客户端若在超时时间内没有完成认证（崩溃/版本不匹配/异常路径），
+        // 服务端主动断开
+        AuthTimeoutGuard.schedule(listener, timeoutSeconds)
         sender.accept(PacketInit(timeoutSeconds))
     }
 }

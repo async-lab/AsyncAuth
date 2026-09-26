@@ -1,5 +1,6 @@
 package club.asynclab.asyncraft.asyncauth.client
 
+import club.asynclab.asyncraft.asyncauth.AsyncAuth
 import club.asynclab.asyncraft.asyncauth.client.gui.ScreenLogin
 import club.asynclab.asyncraft.asyncauth.common.enumeration.AuthStatus
 import club.asynclab.asyncraft.asyncauth.common.misc.Lang
@@ -65,8 +66,14 @@ object ManagerClient {
             } else {
                 val serverKey = resolveServerKey()
                 val username = lastAttemptUsername ?: Minecraft.getInstance().user.name
-                if (serverKey != null) {
-                    ManagerTokenClient.storeToken(serverKey, username, token!!, expiresAt)
+                if (serverKey != null && token != null) {
+                    ManagerTokenClient.storeToken(serverKey, username, token, expiresAt)
+                } else if (serverKey != null) {
+                    // 服务端返回成功但没有下发凭证（例如旧版本服务端/异常数据）：
+                    AsyncAuth.LOGGER.warn(
+                        "Auth succeeded without a token, skipping token cache for {}",
+                        serverKey
+                    )
                 }
             }
         } else if (autoLogin) {
