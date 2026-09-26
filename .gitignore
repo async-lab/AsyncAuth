@@ -25,6 +25,7 @@ run-data
 .serena
 AGENTS.md
 **/.kotlin
+.DS_Store
 
 # Files from Forge MDK
 forge*changelog.txt
